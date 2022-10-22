@@ -35,14 +35,14 @@ class Simplex:
         
         bases = self.restr - self.num_var
 
-        for i in range (0, bases+1):
+        for i in range (0, bases):
             z.append(0)
 
         b.append(0)
 
         z = np.array(z)*-1
         b = np.matrix(b)
-        id = np.identity(3, int)
+        id = np.identity(bases, int)
         x = np.concatenate((self.coef, id), axis=1)
 
         t = np.vstack([x, z])
@@ -84,5 +84,32 @@ class Simplex:
                         table[i,j] = mult*table[posPivo[0], j] + table[i, j]
 
             print(np.round(table, decimals=2),"\n\n")
+
+        return table
+
+    '''Método que adiciona variaveis de folga, excesso e artificial'''
+    def addVariaveis(coeficientes, sinal, restr):
+
+        table = np.matrix(coeficientes, float)
+
+        for i in range(0, len(coeficientes)):
+            
+            #Adiciona variáveis de +artificial e -excesso
+            if(sinal[i] == '>='):
+                    matr = np.zeros((restr, 2))
+                    matr[i,0] = -1
+                    matr[i][1] = 1
+                    
+            #Adiciona variáveis de +artificial
+            elif(sinal[i] == '='):
+                matr = np.zeros((restr, 1))
+                matr[i,0] = 1
+                
+            #Adiciona variáveis de +folga
+            elif(sinal[i] == '<='):
+                matr = np.zeros((restr, 1))
+                matr[i,0] = 1
+        
+            table = np.concatenate(([table, matr]), axis=1)
 
         return table
