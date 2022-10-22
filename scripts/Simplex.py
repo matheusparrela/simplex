@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import sympy as sy
+
 
 class Simplex:
     function = 0
@@ -22,9 +22,10 @@ class Simplex:
         self.primal = primal
 
 
-    def dual():
-        #Código do algoritmo dual
+    """Análise se a solução já foi encontrada"""
+    def sair(self, table):
 
-    
-    def primal():
-         #Código do algoritmo primal
+        if table[len(table)-1:].min() >= 0:
+            return True
+        else: 
+            return False
