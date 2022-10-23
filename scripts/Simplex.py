@@ -1,25 +1,28 @@
 import numpy as np
-import pandas as pd
 
 
 class Simplex:
-    function = 0
-    variable = 0
-    num_var = 0
-    restrictions = []
-    num_restr = 0
-    maximize = True
-    primal = True
+
+    z = []              #Função a ser maximizada/minimizada
+    b = []              #Lado direito das restrições
+    num_var = 0         #Número de variáveis
+    num_restr = 0       #Número de restrições
+    maximize = True     #Verifica se é uma maximização ou minimização
+    restr = []          #restrições
+    sinal= []           #Sinais das restrições: <=, >=, =
+    table = []          #Tabela para execução do método simplex
+   
 
     '''Método construtor da Classe'''
-    def __init__(self, function, variable, num_var, restrictions, num_restr, maximize, primal):
-        self.function = function
-        self.variable = variable
+    def __init__(self, z, b, num_var, num_restr, maximize):
+    
         self.num_var = num_var
-        self.restrictions = restrictions
         self.num_restr = num_restr
         self.maximize = maximize
-        self.primal = primal
+        self.restr = []
+        self.sinal= []
+        self.z = []
+        self.b = []
 
 
     """Análisa se a solução já foi encontrada"""
@@ -30,86 +33,83 @@ class Simplex:
         else: 
             return False
 
+
     """Organiza a tabela para aplicação do método simplex"""
-    def organizeTable(self, restr, num_var, coef):
+    def organizeTable(self):
         
-        bases = self.restr - self.num_var
+        self.table = self.addVariaveis(self.coef, self.sinal, 3)
 
-        for i in range (0, bases):
-            z.append(0)
+        for i in range (0, self.table.shape[1]-self.num_var):
+            self.z.append(0)
 
-        b.append(0)
+        self.b.append(0)
+        self.z = np.array(self.z, float)*-1
+        self.b = np.matrix(self.b, float)
 
-        z = np.array(z)*-1
-        b = np.matrix(b)
-        id = np.identity(bases, int)
-        x = np.concatenate((self.coef, id), axis=1)
+        self.table = np.vstack([self.table, self.z])
+        self.table = np.hstack([self.table, self.b.transpose()])   
+ 
 
-        t = np.vstack([x, z])
-    
-        table = np.hstack([t, b.transpose()])
-        table = table.astype(float)
+    '''Método de resolução usando o simplex'''
+    def solveSimplex(self):
 
-        return table
+        self.organizeTable()
 
-    def solveSimplex(self, table):
-
-        while self.sair(table) == False:
+        while self.sair(self.table) == False:
 
             """Posição do pivô"""
             posPivo = []
             list = []
-            for i in range(0, len(table)-1): 
-                list.append(table[i,6]/table[i, np.where(table == table[len(table)-1:].min())[1][0]])
+            for i in range(0, len(self.table)-1): 
+                list.append(self.table[i,6]/self.table[i, np.where(self.table == self.table[len(self.table)-1:].min())[1][0]])
         
             posPivo.append(list.index(min(list)))
-            posPivo.append(np.where(table == table[len(table)-1:].min())[1][0])
+            posPivo.append(np.where(self.table == self.table[len(self.table)-1:].min())[1][0])
             
-            pivo = table[posPivo[0],posPivo[1]]
+            pivo = self.table[posPivo[0],posPivo[1]]
 
             '''Realiza o manipulação das linhas'''
-            for i in range(0,len(table)):
+            for i in range(0,len(self.table)):
 
-                mult = -float(table[i,posPivo[1]])/float(pivo)
+                mult = -float(self.table[i,posPivo[1]])/float(pivo)
 
                 for j in range(0, 7):
                                                                         
                     if i == posPivo[0]:
                         continue
                         
-                    if i == len(table):
-                        table[posPivo[0],j] = table[posPivo[0],j]/pivo
+                    if i == len(self.table)-1:
+                        self.table[i,j] = mult*self.table[posPivo[0], j] + self.table[i, j]
+                        self.table[posPivo[0],j] = self.table[posPivo[0],j]/pivo
 
                     else:
-                        table[i,j] = mult*table[posPivo[0], j] + table[i, j]
+                        self.table[i,j] = mult*self.table[posPivo[0], j] + self.table[i, j]
+                        
+            print('\n',np.round(self.table, decimals=2),"\n\n")
 
-            print(np.round(table, decimals=2),"\n\n")
 
-        return table
 
     '''Método que adiciona variaveis de folga, excesso e artificial'''
-    def addVariaveis(coeficientes, sinal, restr):
+    def addVariaveis(self):
 
-        table = np.matrix(coeficientes, float)
+        self.table = np.matrix(self.restr, float)
 
-        for i in range(0, len(coeficientes)):
+        for i in range(0, len(self.restr)):
             
-            #Adiciona variáveis de +artificial e -excesso
-            if(sinal[i] == '>='):
-                    matr = np.zeros((restr, 2))
+            #Adiciona variáveis: +artificial e -excesso
+            if(self.sinal[i] == '>='):
+                    matr = np.zeros((self.num_restr, 2))
                     matr[i,0] = -1
                     matr[i][1] = 1
                     
-            #Adiciona variáveis de +artificial
-            elif(sinal[i] == '='):
-                matr = np.zeros((restr, 1))
+            #Adiciona variáveis: +artificial
+            elif(self.sinal[i] == '='):
+                matr = np.zeros((self.num_restr, 1))
                 matr[i,0] = 1
                 
-            #Adiciona variáveis de +folga
-            elif(sinal[i] == '<='):
-                matr = np.zeros((restr, 1))
+            #Adiciona variáveis: +folga
+            elif(self.sinal[i] == '<='):
+                matr = np.zeros((self.num_restr, 1))
                 matr[i,0] = 1
         
-            table = np.concatenate(([table, matr]), axis=1)
-
-        return table
+            self.table = np.concatenate(([self.table, matr]), axis=1)
