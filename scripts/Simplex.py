@@ -53,26 +53,26 @@ class Simplex:
     def solveSimplex(self):
 
         self.organizeTable()
-
+        print(self.table)
         while self.sair(self.table) == False:
 
             """Posição do pivô"""
             posPivo = []
             list = []
             for i in range(0, len(self.table)-1): 
-                list.append(self.table[i,6]/self.table[i, np.where(self.table == self.table[len(self.table)-1:].min())[1][0]])
+                """leva em consideração que esta operação só será realizada quando Pj superior a 0."""
+                if self.table[i, np.where(self.table == self.table[len(self.table)-1:].min())[1][0]] > 0:
+                    list.append(self.table[i, self.table.shape[1]-1]/self.table[i, np.where(self.table == self.table[len(self.table)-1:].min())[1][0]])
         
             posPivo.append(list.index(min(list)))
             posPivo.append(np.where(self.table == self.table[len(self.table)-1:].min())[1][0])
             
             pivo = self.table[posPivo[0],posPivo[1]]
-
             '''Realiza o manipulação das linhas'''
-            for i in range(0,len(self.table)):
+            for i in range(0, len(self.table)):
 
                 mult = -float(self.table[i,posPivo[1]])/float(pivo)
-
-                for j in range(0, 7):
+                for j in range(0, self.table.shape[1]):
                                                                         
                     if i == posPivo[0]:
                         continue
@@ -109,5 +109,5 @@ class Simplex:
             elif(self.sinal[i] == '<='):
                 matr = np.zeros((self.num_restr, 1))
                 matr[i,0] = 1
-        
+
             self.table = np.concatenate(([self.table, matr]), axis=1)
