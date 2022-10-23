@@ -14,15 +14,14 @@ class Simplex:
    
 
     '''Método construtor da Classe'''
-    def __init__(self, z, b, num_var, num_restr, maximize):
-    
+    def __init__(self, z, b, num_var, num_restr, sinal, restr, maximize):
         self.num_var = num_var
         self.num_restr = num_restr
         self.maximize = maximize
-        self.restr = []
-        self.sinal= []
-        self.z = []
-        self.b = []
+        self.restr = restr
+        self.sinal= sinal
+        self.z = z
+        self.b = b
 
 
     """Análisa se a solução já foi encontrada"""
@@ -37,7 +36,7 @@ class Simplex:
     """Organiza a tabela para aplicação do método simplex"""
     def organizeTable(self):
         
-        self.table = self.addVariaveis(self.coef, self.sinal, 3)
+        self.addVariaveis()
 
         for i in range (0, self.table.shape[1]-self.num_var):
             self.z.append(0)
@@ -84,9 +83,8 @@ class Simplex:
 
                     else:
                         self.table[i,j] = mult*self.table[posPivo[0], j] + self.table[i, j]
-                        
-            print('\n',np.round(self.table, decimals=2),"\n\n")
 
+        return self.table
 
 
     '''Método que adiciona variaveis de folga, excesso e artificial'''
