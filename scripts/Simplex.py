@@ -1,3 +1,4 @@
+from turtle import pos
 import numpy as np
 
 
@@ -11,6 +12,7 @@ class Simplex:
     restr = []          #restrições
     sinal= []           #Sinais das restrições: <=, >=, =
     table = []          #Tabela para execução do método simplex
+    base = []
    
 
     '''Método construtor da Classe'''
@@ -66,7 +68,10 @@ class Simplex:
         
             posPivo.append(list.index(min(list)))
             posPivo.append(np.where(self.table == self.table[len(self.table)-1:].min())[1][0])
-            
+            print(posPivo)
+            '''Atualiza as variaveis da base'''
+            self.basicsVariables(posPivo)
+
             pivo = self.table[posPivo[0],posPivo[1]]
             '''Realiza o manipulação das linhas'''
             for i in range(0, len(self.table)):
@@ -99,7 +104,7 @@ class Simplex:
                     matr = np.zeros((self.num_restr, 2))
                     matr[i,0] = -1
                     matr[i][1] = 1
-                    
+
             #Adiciona variáveis: +artificial
             elif(self.sinal[i] == '='):
                 matr = np.zeros((self.num_restr, 1))
@@ -111,3 +116,11 @@ class Simplex:
                 matr[i,0] = 1
 
             self.table = np.concatenate(([self.table, matr]), axis=1)
+            self.base.append(self.table.shape[1])
+
+    def basicsVariables(self, posPivo):
+    
+        self.base[posPivo[0]] = posPivo[1]+1
+    
+
+    #def solution(self):

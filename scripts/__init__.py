@@ -33,3 +33,15 @@ sinal = ['<=','<=','<=','<=','<=']
 s = Simplex(z, b, 2, 5, sinal, restr, False)
 print(np.round(s.solveSimplex(), decimals=3))
 '''
+
+
+#Problema 4
+'''
+z = [3, 2, 5]
+restr= [[1, 2, 1],[3, 0, 2],[1,4,0]]
+b = [430, 460, 420]
+sinal = ['<=','<=','<=',]
+
+s = Simplex(z, b, 3, 3, sinal, restr, False)
+print(np.round(s.solveSimplex(), decimals=3))
+'''
