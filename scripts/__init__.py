@@ -61,9 +61,4 @@ t = Simplex(z, b, 2, 3, sinal, restr, True, False)
 '''
 
 t.start()
-print('Base:', t.base)
-print('Função Objetivo:', t.z)
-print('Função Artificial:', t.arti_function)
-print('Cb:', t.Cb)
-print(t.variable)
 t.result()

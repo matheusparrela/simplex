@@ -14,7 +14,7 @@ class Simplex:
     base = []               #Indice de X para os valores básicos
     Cb = []                 #Valores em Z das variáveis básicas
     artificial = False      #Avalia se exixte alguma variavel artificial para usar o método das duas fases
-    base_init = 0           #Base inicial do problema para ser aplicado na segunda fase do problema
+    base_init = []           #Base inicial do problema para ser aplicado na segunda fase do problema
     arti_function = []      #Função das Variáveis artificiais
     novo_z = []             #Novo Z calculado para operração do método das duas fases
     variable = []           #Lista com as variaveis utilizadas durante a execução do problema
@@ -70,7 +70,6 @@ class Simplex:
                 self.Cb.append(-1)
                 self.variable.append(f'X{i+self.num_var+j}')
 
-                
             #Adiciona variáveis: +folga
             elif(self.sinal[i] == '<='):
                 matr = np.zeros((self.num_restr, 1))
@@ -79,7 +78,8 @@ class Simplex:
                 self.variable.append(f'X{i+self.num_var+j}')
            
             self.table = np.concatenate(([self.table, matr]), axis=1)
-            self.base.append(self.table.shape[1])
+            self.base.append(f'X{self.table.shape[1]}')
+            self.base_init.append(self.table.shape[1])
             
     
   
@@ -131,8 +131,8 @@ class Simplex:
         self.table = np.vstack([self.table, self.novo_z])
 
         '''Para o passo II - elimina coluna das variáveis artificiais (Caso resrição >= ou =)'''
-        self.base_init = sorted(self.base)
-
+        self.base_init = sorted(self.base_init)
+      
     
     '''A base ainda não está muito bem definida, atualizarei depois'''
     #Há um erro quando a Fase II é aplicada, pois é excluido os indices das variáveis artificiais
@@ -221,17 +221,15 @@ class Simplex:
 
 
     def result(self):
-
+        print('\n|------------------Resultado-----------------|')
         print('Z =', np.round(self.table[self.table.shape[0]-1, self.table.shape[1]-1], decimals=3))
         
         for i  in range(0, len(self.base)):
-            
-            try:
-                if self.base_init.index(self.base[i]):
-                    print(f'{self.base[i]} = {self.table[i,self.table.shape[1]-1]}')
 
-            except:
-                print(f'{self.base[i]} = 0')
+            if (self.variable[i] in self.base) == True:
+                    print(f'{self.variable[i]} = {np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1]-1], decimals=3)}')
+            else:
+                print(f'{self.variable[i]} = 0')
 
 
     '''Para que um modelo esteja na forma padrão, o valor à direita de uma equação ou inequação deve ser sempre não-negativo. Então, caso haja equações do tipo:
