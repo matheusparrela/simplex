@@ -1,2 +1,2 @@
-# simplexPO
- 
+# Pesquisa Operacional
+## Método Simplex
