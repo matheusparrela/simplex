@@ -17,6 +17,7 @@ class Simplex:
     base_init = 0           #Base inicial do problema para ser aplicado na segunda fase do problema
     arti_function = []      #Função das Variáveis artificiais
     novo_z = []             #Novo Z calculado para operração do método das duas fases
+    variable = []           #Lista com as variaveis utilizadas durante a execução do problema
    
 
     '''Método construtor da Classe'''
@@ -44,7 +45,7 @@ class Simplex:
     def addVariables(self):
 
         self.table = np.matrix(self.restr, float)
-        
+        j = 1
         for i in range(0, len(self.restr)):
             
             #Adiciona variáveis: +artificial e -excesso
@@ -56,6 +57,9 @@ class Simplex:
                 self.arti_function.append(0)
                 self.arti_function.append(-1)
                 self.Cb.append(-1)
+                self.variable.append(f'X{i+self.num_var+j}')
+                j+=1
+                self.variable.append(f'X{i+self.num_var+j}')
 
             #Adiciona variáveis: +artificial
             elif(self.sinal[i] == '='):
@@ -64,6 +68,7 @@ class Simplex:
                 self.artificial = True
                 self.arti_function.append(-1)
                 self.Cb.append(-1)
+                self.variable.append(f'X{i+self.num_var+j}')
 
                 
             #Adiciona variáveis: +folga
@@ -71,13 +76,15 @@ class Simplex:
                 matr = np.zeros((self.num_restr, 1))
                 matr[i,0] = 1
                 self.Cb.append(0)
+                self.variable.append(f'X{i+self.num_var+j}')
            
             self.table = np.concatenate(([self.table, matr]), axis=1)
             self.base.append(self.table.shape[1])
+            
     
   
     '''Oraganiza a função a ser otimizada'''
-    def functionObjetivo(self):
+    def objectiveFunction(self):
         
         for i in range (0, self.table.shape[1]-len(self.z)):
                 self.z.append(0)
@@ -102,7 +109,7 @@ class Simplex:
    
     
     '''Fase II - Atualiza a função objetivo'''
-    def functionObjetivo1(self):
+    def objectiveFunctionFaseII(self):
 
             for i in range(0, self.table.shape[1]):
                 soma = 0
@@ -114,26 +121,31 @@ class Simplex:
    
     '''Organiza a tabela para aplicação do método simplex'''
     def organizeTable(self):
+        '''Variaveis do problema'''
+        for i in range(0, self.num_var):
+            self.variable.append(f'X{i+1}')
 
         self.addVariables()
         self.table = np.hstack([self.table, self.b])
-        self.functionObjetivo()
+        self.objectiveFunction()
         self.table = np.vstack([self.table, self.novo_z])
 
         '''Para o passo II - elimina coluna das variáveis artificiais (Caso resrição >= ou =)'''
         self.base_init = sorted(self.base)
 
     
-    def basicsVariables(self, posPivo):
-        '''A base ainda não está muito bem definida, atualizarei depois'''
-        self.base[posPivo[0]] = posPivo[1]+1
+    '''A base ainda não está muito bem definida, atualizarei depois'''
+    #Há um erro quando a Fase II é aplicada, pois é excluido os indices das variáveis artificiais
+    def basicVariables(self, posPivo):
+        
+        self.base[posPivo[0]] = self.variable[posPivo[1]]
         self.Cb[posPivo[0]] = self.z[posPivo[1]]
         print('Base: ', self.base) 
         print('Cb', self.Cb)   
 
 
     '''Método de resolução usando o simplex'''
-    def sem(self):
+    def start(self):
 
         self.organizeTable()
         
@@ -143,20 +155,22 @@ class Simplex:
             '''Enquanto Z diferente de 0'''   
             while self.table[self.table.shape[0]-1, self.table.shape[1]-1] != 0:
                 self.solveSimplex()
-                print(np.round(self.table, decimals=3))
+                print('Tabela Simplex:\n', np.round(self.table, decimals=3))
             
             '''Apaga as colunas das variáveis artificiais para aplicar a 2 fase'''
             for i in range(0, len(self.base_init)):
                 self.table = np.delete(self.table, self.base_init[i]-i-1, axis = 1)
-                print('Nova tabela\n', np.round(self.table, decimals=3))
+                print('Tabela Simplex:\n', np.round(self.table, decimals=3))
+                self.variable.pop(self.base_init[i]-i-1)
 
             '''Fase II'''
-            self.functionObjetivo1()
-            print(np.round(self.table, decimals=3),'\n')
+            self.objectiveFunctionFaseII()
+            print('Tabela Simplex:\n', np.round(self.table, decimals=3),'\n')
 
+        '''Enquanto existir na função objetivo Z valores menores que 0'''
         while self.out(self.table) == False:
             self.solveSimplex()
-            print(np.round(self.table, decimals=3))
+            print('Tabela Simplex:\n', np.round( self.table, decimals=3))
 
 
     '''Método de resolução usando o simplex'''
@@ -182,7 +196,7 @@ class Simplex:
             posPivo.append(np.where(self.table[len(self.table)-1:,0:-1] == self.table[len(self.table)-1:,0:-1].min())[1][0])
             
             '''Atualiza as variaveis da base'''
-            self.basicsVariables(posPivo)
+            self.basicVariables(posPivo)
 
             pivo = self.table[posPivo[0],posPivo[1]]
             print('Pivo:', pivo)
@@ -204,3 +218,27 @@ class Simplex:
             else: 
                 '''Pivo é igual a zero'''
                 print('Erro 2')
+
+
+    def result(self):
+
+        print('Z =', np.round(self.table[self.table.shape[0]-1, self.table.shape[1]-1], decimals=3))
+        
+        for i  in range(0, len(self.base)):
+            
+            try:
+                if self.base_init.index(self.base[i]):
+                    print(f'{self.base[i]} = {self.table[i,self.table.shape[1]-1]}')
+
+            except:
+                print(f'{self.base[i]} = 0')
+
+
+    '''Para que um modelo esteja na forma padrão, o valor à direita de uma equação ou inequação deve ser sempre não-negativo. Então, caso haja equações do tipo:
+    A primeira coisa que devemos fazer é multiplicar os dois lados da equação e inequação por (-1):'''
+    #def negative(self):
+
+
+    '''Modelo possui Variáveis sem Restrição de Sinal'''
+    '''Perceba que desta vez, a variável x1 não possui restrição de sinal. Ela pode ser tanto positiva como negativa. Para resolver isso, precisamos eliminar a variável incômoda. Podemos simplesmente substituí-la por uma operação de subtração entre duas variáveis não negativas:'''
+    #def 

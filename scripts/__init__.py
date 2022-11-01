@@ -1,12 +1,10 @@
 from Simplex import Simplex
 import numpy as np
 '''Até o momento presente o algoritmo está funcionando para os seguintes problemas:
-Problemas {1, 5}
+Problemas {1, 2, 3, 4, 5, 6}
 
 Os demais não foram testados devido ao site phpsimplex está fora do ar.
 '''
-
-
 
 #Problema 1
 '''
@@ -46,7 +44,6 @@ t = Simplex(z, b, 3, 3, sinal, restr, True, False)
 
 #Problema 5
 
-
 z = [2, 1, 3]
 restr= [[5, 2, 7],[3,2, 5]]
 b = [[420], [280]]
@@ -63,10 +60,10 @@ sinal = ['<=','<=','<=']
 t = Simplex(z, b, 2, 3, sinal, restr, True, False)
 '''
 
-t.sem()
-print('Tabela Simplex:\n', np.round(t.table, decimals=3))
-
+t.start()
 print('Base:', t.base)
 print('Função Objetivo:', t.z)
 print('Função Artificial:', t.arti_function)
 print('Cb:', t.Cb)
+print(t.variable)
+t.result()
