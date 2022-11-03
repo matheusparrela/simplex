@@ -1,7 +1,11 @@
 from Simplex import Simplex
-import numpy as np
+
 '''Até o momento presente o algoritmo está funcionando para os seguintes problemas:
+Primal:
 Problemas {1, 2, 3, 4, 5, 6}
+
+Dual:
+Problemas {5}
 
 Os demais não foram testados devido ao site phpsimplex está fora do ar.
 '''
@@ -48,7 +52,7 @@ z = [2, 1, 3]
 restr= [[5, 2, 7],[3,2, 5]]
 b = [[420], [280]]
 sinal = ['=','>=']
-t = Simplex(z, b, 3, 2, sinal, restr, True, False)
+t = Simplex(z, b, 3, 2, sinal, restr, False, True)
 
 
 #Problema 6

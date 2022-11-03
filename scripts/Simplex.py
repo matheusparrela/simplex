@@ -33,9 +33,9 @@ class Simplex:
 
     
     '''Análisa se a solução já foi encontrada'''
-    def out(self, table):
+    def out(self):
 
-        if table[len(table)-1:].min() >= 0:
+        if np.round(self.table[len(self.table)-1:,0:-1].min(), decimals = 3) >= 0:
             return True
         else: 
             return False
@@ -125,8 +125,18 @@ class Simplex:
         for i in range(0, self.num_var):
             self.variable.append(f'X{i+1}')
 
+        '''Organiza a tabela para ser aplicado o método dual'''
+        if self.dual == True:
+            self.dualSimplex()
+
         self.addVariables()
         self.table = np.hstack([self.table, self.b])
+
+        '''Modifica a função objetivo para realizar a minimização do problema'''
+        if self.maximize == False:
+            for i in range(0, len(self.z)):
+                self.z[i] = self.z[i]*-1
+
         self.objectiveFunction()
         self.table = np.vstack([self.table, self.novo_z])
 
@@ -148,6 +158,7 @@ class Simplex:
     def start(self):
 
         self.organizeTable()
+        print('Tabela Simplex:\n', np.round(self.table, decimals=3))
         
         '''Se existir variáveis artificiais resolvemos usando o método das duas fases'''
         if self.artificial == True:
@@ -168,9 +179,9 @@ class Simplex:
             print('Tabela Simplex:\n', np.round(self.table, decimals=3),'\n')
 
         '''Enquanto existir na função objetivo Z valores menores que 0'''
-        while self.out(self.table) == False:
+        while self.out() == False:
             self.solveSimplex()
-            print('Tabela Simplex:\n', np.round( self.table, decimals=3))
+            print('Tabela Simplex:\n', np.round( self.table, decimals=5))
 
 
     '''Método de resolução usando o simplex'''
@@ -221,10 +232,15 @@ class Simplex:
 
 
     def result(self):
+        
+        '''Se o problema é de minimização, o resultado tem que ser multiplicado por -1'''
+        if self.maximize == False:
+            self.table[self.table.shape[0]-1, self.table.shape[1]-1] = self.table[self.table.shape[0]-1, self.table.shape[1]-1]*-1
+        
         print('\n|------------------Resultado-----------------|')
         print('Z =', np.round(self.table[self.table.shape[0]-1, self.table.shape[1]-1], decimals=3))
         
-        for i  in range(0, len(self.base)):
+        for i  in range(0, self.num_var):
 
             if (self.variable[i] in self.base) == True:
                     print(f'{self.variable[i]} = {np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1]-1], decimals=3)}')
@@ -232,10 +248,34 @@ class Simplex:
                 print(f'{self.variable[i]} = 0')
 
 
+    '''Modifica a tabela simplex para utilizar o método na sua forma dual'''
+    def dualSimplex(self):
+ 
+        c = np.transpose(self.restr)
+        self.restr = c.tolist()
+    
+        temp = self.z
+    
+        self.z = []
+        for i in range(0, len(self.b)):
+            self.z.append(self.b[i][0])
+        
+        self.b = []
+        self.sinal = []
+        self.num_var = len(self.z)
+        self.num_restr = len(self.restr)
+        self.maximize = False
+
+        for i in range(0, self.num_restr):
+
+            self.b.append([temp[i]])
+            self.sinal.append('>=')
+
+    
     '''Para que um modelo esteja na forma padrão, o valor à direita de uma equação ou inequação deve ser sempre não-negativo. Então, caso haja equações do tipo:
     A primeira coisa que devemos fazer é multiplicar os dois lados da equação e inequação por (-1):'''
-    #def negative(self):
-
+    #def negative(self):    
+        
 
     '''Modelo possui Variáveis sem Restrição de Sinal'''
     '''Perceba que desta vez, a variável x1 não possui restrição de sinal. Ela pode ser tanto positiva como negativa. Para resolver isso, precisamos eliminar a variável incômoda. Podemos simplesmente substituí-la por uma operação de subtração entre duas variáveis não negativas:'''
