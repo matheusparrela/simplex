@@ -2,9 +2,9 @@ from django import forms
 from .models import Variable
         
 class MyForm(forms.ModelForm):
-    'numeroRestricoes': forms.IntegerField(max_lenght=3)
-    'numeroVariaveisDecisao': forms.IntegerField(max_lenght=3)
-                
+    numeroRestricoes       =  forms.IntegerField()
+    numeroVariaveisDecisao =  forms.IntegerField()
+            
                 
                 
 class FormVariable: 
