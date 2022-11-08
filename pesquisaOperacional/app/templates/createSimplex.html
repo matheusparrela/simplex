@@ -13,17 +13,9 @@
     <div class="card-header">Gerar Problema</div>
     <div class="card-body">
       <h4 class="card-title">Dados do Problema </h4>
-      <form enctype="multipart/form-data" method="POST" action="{ % url 'salvar' % }">
-           
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Numero de variaveis de decisao</label>
-              <input type="number" class="form-control" name="numerosVariaveisDecisao" >
-            </div>
-            
-            <div class="mb-3">
-              <label for="exampleInputPassword1" class="form-label">Numero de Restricoes</label>
-              <input type="number" class="form-control" name="numeroRestricoes">
-            </div>
+      <form enctype="multipart/form-data" method="post" action=".">
+            {% csrf_token %}
+            {{ form }}
         <button type="submit" value="Cadastrar dados"  class="btn btn-success">Cadastrar</button>
     </form>
   </div>

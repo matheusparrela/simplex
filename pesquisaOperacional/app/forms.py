@@ -1,12 +1,11 @@
 from django import forms
 from .models import Variable
         
-class MyForm(forms.ModelForm):
-    'numeroRestricoes': forms.IntegerField(max_lenght=3)
-    'numeroVariaveisDecisao': forms.IntegerField(max_lenght=3)
-                
-                
-                
+class MyForm(forms.Form):
+    numeroRestricoes       =  forms.IntegerField(max_value=100)
+    numeroVariaveisDecisao =  forms.IntegerField(max_value=100)
+            
+                            
 class FormVariable: 
     class Meta: 
         model = Variable
