@@ -1,21 +1,15 @@
 from django import forms
 from .models import Variable
-
-
         
-class ServidorForm(forms.ModelForm):
-    class Meta:
+class MyForm(forms.ModelForm):
+    'numeroRestricoes': forms.IntegerField(max_lenght=3)
+    'numeroVariaveisDecisao': forms.IntegerField(max_lenght=3)
+                
+                
+                
+class FormVariable: 
+    class Meta: 
         model = Variable
-        fields = ('numeroRestricoes', 'numerosVariaveisDecisao')
-        widgets = {
-            'numeroRestricoes': forms.TextInput(attrs={
-                'class': 'form-control',
-                'max_length': 2,
-                'placeholder': 'number'
-            }),
-            'numerosVariaveisDecisao': forms.textInput(attrs={
-                'class': 'form-control',
-                'max_length': 2,
-            })              
-        }
+        fields = '__all__'
         
+
