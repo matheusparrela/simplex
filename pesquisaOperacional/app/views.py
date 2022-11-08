@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from app.models import Variable
 from .models import Variable
-
+from .forms import FormVariable
 
 
 # Create your views here.
@@ -10,25 +10,10 @@ def index(request):
 
 
 def createSimplex(request):
-    if request.method == 'GET':
-        variables = Variable.objects.all()
-        context = {
-            'form': form,
-            'user': user,
-        }
-        return render(request, 'createSimplex.html', context=context)
+    form = FormVariable()
+    context = {
+        'form': form
+    }
     
-    '''else:
-        form2 = ServidorForm(request.POST, request.FILES)
-        form2.save()
-        return redirect('') '''
-        
-
-    
-    
-    
-    
-    
-    
-    return render(request, "createSimplex.html",{"variable": variables}) 
+    return render(request, 'createSimplex.html',context = context)
 
