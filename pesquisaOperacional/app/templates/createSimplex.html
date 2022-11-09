@@ -1,3 +1,5 @@
+{% load crispy_forms_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,9 +15,9 @@
     <div class="card-header">Gerar Problema</div>
     <div class="card-body">
       <h4 class="card-title">Dados do Problema </h4>
-      <form enctype="multipart/form-data" method="post" action=".">
+      <form action="." enctype="multipart/form-data" method="post">
             {% csrf_token %}
-            {{ form }}
+            {{ form|crispy }}
         <button type="submit" value="Cadastrar dados"  class="btn btn-success">Cadastrar</button>
     </form>
   </div>
