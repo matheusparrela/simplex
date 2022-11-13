@@ -16,7 +16,7 @@
     <div class="card-body">
       <h4 class="card-title">Dados do Problema </h4>
       <form action="." enctype="multipart/form-data" method="post">
-            {% csrf_token %}
+            {%csrf_token%}
             {{ form|crispy }}
         <button type="submit" value="Cadastrar dados"  class="btn btn-success">Cadastrar</button>
     </form>

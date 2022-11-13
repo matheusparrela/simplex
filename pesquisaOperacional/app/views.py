@@ -17,3 +17,6 @@ def createSimplex(request):
     
     return render(request, 'createSimplex.html',context = context)
 
+
+def problemVariables(request):
+    return render(request, 'problemVariables.html')
