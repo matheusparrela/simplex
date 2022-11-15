@@ -10,7 +10,3 @@ class FormVariable:
     class Meta: 
         model = Variable
         fields = ('numeroRestricoes','numeroVariaveisDecisao')
-        
-
-class MatrizVariable(forms.Form, listVariable):
-    

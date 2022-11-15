@@ -6,13 +6,15 @@ from .Controller.CreateListVariableController import CreateListVariableControlle
 from .forms import MyForm
 from .models import Variable
 
+nlin = 0
+ncol = 0
 
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
 
 
-def createSimplex(request, response):
+def createSimplex(request):
     if request.method == "GET":
         form = MyForm()    
         context = { 
@@ -25,16 +27,20 @@ def createSimplex(request, response):
         
         if form.is_valid():
             objectSimplex = form.cleaned_data 
-            listVariables = CreateListVariableController(objectSimplex['numeroRestricoes'], objectSimplex['numeroVariaveisDecisao'])
-            #form.save()    
-        
+            nlin = objectSimplex['numeroRestricoes']
+            ncol = objectSimplex['numeroVariaveisDecisao']
+            form.save()    
         context = {
             'form': form
         }
-        
-        
         return redirect('problemVariables')
 
 
 def problemVariables(request):
-    return render(request, 'problemVariables.html')
+    variable = Variable.objects.all()
+    context = {
+        "variable": variable
+    }
+    
+    return render(request, 'problemVariables.html',context)
+
