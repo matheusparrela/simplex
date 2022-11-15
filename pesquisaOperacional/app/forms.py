@@ -9,6 +9,6 @@ class MyForm(forms.Form):
 class FormVariable: 
     class Meta: 
         model = Variable
-        fields = '__all__'
+        fields = ('numeroRestricoes','numeroVariaveisDecisao')
         
 
