@@ -12,3 +12,5 @@ class FormVariable:
         fields = ('numeroRestricoes','numeroVariaveisDecisao')
         
 
+class MatrizVariable(forms.Form, listVariable):
+    

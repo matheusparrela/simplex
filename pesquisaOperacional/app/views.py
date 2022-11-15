@@ -12,7 +12,7 @@ def index(request):
     return render(request, 'index.html')
 
 
-def createSimplex(request):
+def createSimplex(request, response):
     if request.method == "GET":
         form = MyForm()    
         context = { 
@@ -24,9 +24,9 @@ def createSimplex(request):
         form = MyForm(request.POST)
         
         if form.is_valid():
-            print(form.cleaned_data)
-            CreateListVariableController(form.data['numeroRestricoes'], form.data['numeroVariaveisDecisao'])
-            form.save()    
+            objectSimplex = form.cleaned_data 
+            listVariables = CreateListVariableController(objectSimplex['numeroRestricoes'], objectSimplex['numeroVariaveisDecisao'])
+            #form.save()    
         
         context = {
             'form': form
