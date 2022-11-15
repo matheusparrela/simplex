@@ -22,11 +22,17 @@ def createSimplex(request):
 
     else:
         form = MyForm(request.POST)
-               
-
-        CreateListVariableController(form.data['numeroRestricoes'], form.data['numeroVariaveisDecisao'])
         
-        context = {}
+        if form.is_valid():
+            print(form.cleaned_data)
+            CreateListVariableController(form.data['numeroRestricoes'], form.data['numeroVariaveisDecisao'])
+            form.save()    
+        
+        context = {
+            'form': form
+        }
+        
+        
         return redirect('problemVariables')
 
 
