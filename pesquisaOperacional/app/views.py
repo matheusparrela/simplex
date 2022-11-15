@@ -1,7 +1,10 @@
-from django.shortcuts import redirect, render
 from app.models import Variable
-from .models import Variable
+from django.shortcuts import redirect, render
+
+from .Controller.CreateListVariableController import CreateListVariableController
+
 from .forms import MyForm
+from .models import Variable
 
 
 # Create your views here.
@@ -19,10 +22,12 @@ def createSimplex(request):
 
     else:
         form = MyForm(request.POST)
-        #form.data['numeroRestricoes']
+               
+
+        CreateListVariableController(form.data['numeroRestricoes'], form.data['numeroVariaveisDecisao'])
         
         context = {}
-        return render(request, 'index.html', context=context)
+        return redirect('problemVariables')
 
 
 def problemVariables(request):
