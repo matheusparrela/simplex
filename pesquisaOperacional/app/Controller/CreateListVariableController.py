@@ -7,3 +7,4 @@ def CreateListVariableController(nLim, nCol):
     listVariables = np.zeros((nLin, nCol))
     
     print(listVariables)
+    return listVariables

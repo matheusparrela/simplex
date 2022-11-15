@@ -10,5 +10,3 @@ class FormVariable:
     class Meta: 
         model = Variable
         fields = ('numeroRestricoes','numeroVariaveisDecisao')
-        
-
