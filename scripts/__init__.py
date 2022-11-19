@@ -52,7 +52,7 @@ z = [2, 1, 3]
 restr= [[5, 2, 7],[3,2, 5]]
 b = [[420], [280]]
 sinal = ['=','>=']
-t = Simplex(z, b, 3, 2, sinal, restr, False, True)
+t = Simplex(z, b, 3, 2, sinal, restr, False, False)
 
 
 #Problema 6
@@ -64,5 +64,9 @@ sinal = ['<=','<=','<=']
 t = Simplex(z, b, 2, 3, sinal, restr, True, False)
 '''
 
+
+#def __init__(self, z, b, num_var, num_restr, sinal, restr, maximize, dual):
 t.start()
 t.result()
+if t.erro != '':
+    print(t.erro)

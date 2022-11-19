@@ -14,10 +14,12 @@ class Simplex:
     base = []               #Indice de X para os valores básicos
     Cb = []                 #Valores em Z das variáveis básicas
     artificial = False      #Avalia se exixte alguma variavel artificial para usar o método das duas fases
-    base_init = []           #Base inicial do problema para ser aplicado na segunda fase do problema
+    base_init = []          #Base inicial do problema para ser aplicado na segunda fase do problema
     arti_function = []      #Função das Variáveis artificiais
     novo_z = []             #Novo Z calculado para operração do método das duas fases
     variable = []           #Lista com as variaveis utilizadas durante a execução do problema
+    exit = False            #Controle a saida do loop de execução
+    erro = ''               #Informa qual erro ocorreu na execução do problema
    
 
     '''Método construtor da Classe'''
@@ -35,7 +37,7 @@ class Simplex:
     '''Análisa se a solução já foi encontrada'''
     def out(self):
 
-        if np.round(self.table[len(self.table)-1:,0:-1].min(), decimals = 3) >= 0:
+        if np.round(self.table[len(self.table)-1:,0:-1].min(), decimals = 3) >= 0 or self.exit == True:
             return True
         else: 
             return False
@@ -145,7 +147,6 @@ class Simplex:
       
     
     '''A base ainda não está muito bem definida, atualizarei depois'''
-    #Há um erro quando a Fase II é aplicada, pois é excluido os indices das variáveis artificiais
     def basicVariables(self, posPivo):
         
         self.base[posPivo[0]] = self.variable[posPivo[1]]
@@ -179,8 +180,9 @@ class Simplex:
             print('Tabela Simplex:\n', np.round(self.table, decimals=3),'\n')
 
         '''Enquanto existir na função objetivo Z valores menores que 0'''
-        while self.out() == False:
+        while self.exit == False:
             self.solveSimplex()
+            self.exit = self.out()
             print('Tabela Simplex:\n', np.round( self.table, decimals=5))
 
 
@@ -199,13 +201,18 @@ class Simplex:
                         list.append(self.table[i, self.table.shape[1]-1]/self.table[i, np.where(self.table[len(self.table)-1:,0:-1] == self.table[len(self.table)-1:,0:-1].min())[1][0]])
 
                     except:
-                        print("Erro no Pivo")
+                        erro = "Erro 1 - Problema na escolha do Pivô"
                 else:
                     list.append(100000000)
 
             posPivo.append(list.index(min(list)))
             posPivo.append(np.where(self.table[len(self.table)-1:,0:-1] == self.table[len(self.table)-1:,0:-1].min())[1][0])
-            
+
+            '''Solução ilimitada (unbounded): se toda coluna da variável que entra na base tem todos os seus elementos negativos ou nulos, trata-se de um problema não-limitado, ou seja, que tem solução ilimitada. Não há valor ótimo concreto para a função objetivo, mas à medida que os valores das variáveis são aumentados, o valor Z também aumenta sem violar qualquer restrição.'''
+            if np.round(self.table[0:-1, posPivo[1]].max(), decimals = 3) <= 0:
+                self.erro = 'Erro 2 - Solução ilimitada -(unbounded)'
+                self.exit = True
+        
             '''Atualiza as variaveis da base'''
             self.basicVariables(posPivo)
 
@@ -228,7 +235,8 @@ class Simplex:
                             self.table[i,j] = mult*self.table[posPivo[0], j] + self.table[i, j]
             else: 
                 '''Pivo é igual a zero'''
-                print('Erro 2')
+                erro = 'Erro 3 - Pivô nulo ou negativo'
+
 
 
     def result(self):
@@ -264,8 +272,13 @@ class Simplex:
         self.sinal = []
         self.num_var = len(self.z)
         self.num_restr = len(self.restr)
-        self.maximize = False
-
+      
+        if self.maximize == True:
+            self.maximize = False
+        else:
+            self.maximize = True
+      
+        '''Consideramos aqui que as variaveis dos problemas resolvidos serão sempre do tipo X >= 0'''
         for i in range(0, self.num_restr):
 
             self.b.append([temp[i]])
@@ -280,3 +293,9 @@ class Simplex:
     '''Modelo possui Variáveis sem Restrição de Sinal'''
     '''Perceba que desta vez, a variável x1 não possui restrição de sinal. Ela pode ser tanto positiva como negativa. Para resolver isso, precisamos eliminar a variável incômoda. Podemos simplesmente substituí-la por uma operação de subtração entre duas variáveis não negativas:'''
     #def 
+
+    '''Soluções infinitas: satisfeito o critério de parada, se alguma variável de decisão não-básica tem um valor 0 na fila Z, significa que existe outra solução que fornece o mesmo valor ótimo para a função objetivo. Neste caso, o problema admite infinitas soluções, todas as quais abrangidas dentro do segmento (ou parte do plano, região de espaço, etc., conforme o número de variáveis do problema) definido por A·X1 + B·X2 = Z0. Através de uma nova iteração e fazendo com que a variável de decisão que tenha 0 na linha Z entre na base, é obtida uma solução diferente para o mesmo valor ótimo.'''
+    #def infinatasSolucoes():
+
+    '''Não existe solução: quando nenhum ponto satisfaz às restrições do problema, ocorre a inviabilidade, não existindo nenhuma solução possível para ele. Neste caso, uma vez terminadas todas as iterações do algoritmo, existem na base variáveis artificiais em que o valor é superior a zero.'''
+    #def naoSolucao():
