@@ -20,6 +20,7 @@ class Simplex:
     variable = []  # Lista com as variaveis utilizadas durante a execução do problema
     exit = False  # Controle a saida do loop de execução
     error = ''  # Informa qual erro ocorreu na execução do problema
+    var_artificial = []  # Recebe as variaveis artificiais do problema
 
     '''Método construtor da Classe'''
 
@@ -52,9 +53,9 @@ class Simplex:
 
             # Adiciona variáveis: +artificial e -excesso
             if self.signal[i] == '>=':
-                matr = np.zeros((self.num_restr, 2))
-                matr[i, 0] = -1
-                matr[i][1] = 1
+                matriz = np.zeros((self.num_restr, 2))
+                matriz[i, 0] = -1
+                matriz[i][1] = 1
                 self.artificial = True
                 self.arti_function.append(0)
                 self.arti_function.append(-1)
@@ -62,25 +63,27 @@ class Simplex:
                 self.variable.append(f'X{i + self.num_var + j}')
                 j += 1
                 self.variable.append(f'X{i + self.num_var + j}')
+                self.var_artificial.append(f'X{i + self.num_var + j}')
 
             # Adiciona variáveis: +artificial
             elif self.signal[i] == '=':
-                matr = np.zeros((self.num_restr, 1))
-                matr[i, 0] = 1
+                matriz = np.zeros((self.num_restr, 1))
+                matriz[i, 0] = 1
                 self.artificial = True
                 self.arti_function.append(-1)
                 self.Cb.append(-1)
                 self.variable.append(f'X{i + self.num_var + j}')
+                self.var_artificial.append(f'X{i + self.num_var + j}')
 
             # Adiciona variáveis: +folga
             elif self.signal[i] == '<=':
-                matr = np.zeros((self.num_restr, 1))
-                matr[i, 0] = 1
+                matriz = np.zeros((self.num_restr, 1))
+                matriz[i, 0] = 1
                 self.Cb.append(0)
                 self.variable.append(f'X{i + self.num_var + j}')
                 self.arti_function.append(0)
 
-            self.table = np.concatenate(([self.table, matr]), axis=1)
+            self.table = np.concatenate(([self.table, matriz]), axis=1)
             self.base.append(f'X{self.table.shape[1]}')
             self.base_init.append(self.table.shape[1])
 
@@ -170,15 +173,17 @@ class Simplex:
         if self.artificial:
 
             '''Enquanto Z diferente de 0'''
-            while self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] != 0:
+            while (self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] != 0) and (not self.out()):
                 self.solveSimplex()
                 print('Tabela Simplex:\n', np.round(self.table, decimals=3))
 
-            '''Apaga as colunas das variáveis artificiais para aplicar a 2 fase'''
-            for i in range(0, len(self.base_init)):
-                self.table = np.delete(self.table, self.base_init[i] - i - 1, axis=1)
-                print('Tabela Simplex:\n', np.round(self.table, decimals=3))
-                self.variable.pop(self.base_init[i] - i - 1)
+            if self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] == 0:
+                '''Apaga as colunas das variáveis artificiais para aplicar a 2 fase'''
+                for i in range(0, len(self.base_init)):
+                    self.table = np.delete(self.table, self.base_init[i] - i - 1, axis=1)
+                    print('Tabela Simplex:\n', np.round(self.table, decimals=3))
+                    self.variable.pop(self.base_init[i] - i - 1)
+                self.exit = False
 
             '''Fase II'''
             self.objectiveFunctionFaseII()
@@ -189,6 +194,9 @@ class Simplex:
             self.solveSimplex()
             self.exit = self.out()
             print('Tabela Simplex:\n', np.round(self.table, decimals=5))
+
+        self.noSolution()
+        self.infiniteSolutions()
 
     '''Método de resolução usando o simplex'''
 
@@ -299,6 +307,7 @@ class Simplex:
     '''Para que um modelo esteja na forma padrão, o valor à direita de uma equação ou inequação deve ser sempre 
     não-negativo. Então, caso haja equações do tipo: A primeira coisa que devemos fazer é multiplicar os dois lados 
     da equação e inequação por (-1): '''
+
     def negative(self):
 
         for i in range(0, self.num_restr):
@@ -313,22 +322,27 @@ class Simplex:
                 elif self.signal[i] == '>=':
                     self.signal[i] = '<='
 
-    '''Modelo possui Variáveis sem Restrição de Sinal'''
-    '''Perceba que desta vez, a variável x1 não possui restrição de sinal. Ela pode ser tanto positiva como negativa. 
-    Para resolver isso, precisamos eliminar a variável incômoda. Podemos simplesmente substituí-la por uma operação 
-    de subtração entre duas variáveis não negativas: '''
-    # def
-
     '''Soluções infinitas: satisfeito o critério de parada, se alguma variável de decisão não-básica tem um valor 0 
     na fila Z, significa que existe outra solução que fornece o mesmo valor ótimo para a função objetivo. Neste caso, 
     o problema admite infinitas soluções, todas as quais abrangidas dentro do segmento (ou parte do plano, 
     região de espaço, etc., conforme o número de variáveis do problema) definido por A·X1 + B·X2 = Z0. Através de uma 
     nova iteração e fazendo com que a variável de decisão que tenha 0 na linha Z entre na base, é obtida uma solução 
     diferente para o mesmo valor ótimo. '''
-    # def infinatasSolucoes():
+
+    def infiniteSolutions(self):
+
+        for i in range(0, self.num_var):
+            if self.variable[i] not in self.base:
+                if np.round(self.table[self.table.shape[0]-1, self.variable.index(self.variable[i])], decimals=3) == 0:
+                    self.error = 'Erro 4 - Infinitas Soluções.'
 
     '''Não existe solução: quando nenhum ponto satisfaz às restrições do problema, ocorre a inviabilidade, 
     não existindo nenhuma solução possível para ele. Neste caso, uma vez terminadas todas as iterações do algoritmo, 
-    existem na base variáveis artificiais em que o valor é superior a zero.
-    # def naoSolucao():
-'''
+    existem na base variáveis artificiais em que o valor é superior a zero. (os valores são indicados na coluna Xn)'''
+
+    def noSolution(self):
+
+        for i in range(0, len(self.base)):
+            if self.base[i] in self.var_artificial:
+                if self.table[self.base.index(self.base[i]), self.table.shape[1]-1] > 0:
+                    self.error = 'Erro 5 - Não existe solução.'

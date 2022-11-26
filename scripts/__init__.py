@@ -40,12 +40,11 @@ t = Simplex(z, b, 2, 5, signal, restr, True, False)
 # Problema 4
 '''
 z = [3, 2, 5]
-restr= [[1, 2, 1],[3, 0, 2],[1,4,0]]
+restr = [[1, 2, 1], [3, 0, 2], [1, 4, 0]]
 b = [[430], [460], [420]]
-signal = ['<=','<=','<=',]
+signal = ['<=', '<=', '<=']
 t = Simplex(z, b, 3, 3, signal, restr, True, False)
 '''
-
 # Problema 5
 
 z = [2, 1, 3]
