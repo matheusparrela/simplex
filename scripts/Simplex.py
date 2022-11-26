@@ -2,40 +2,31 @@ import numpy as np
 
 
 class Simplex:
-    z = []  # Função a ser maximizada/minimizada
-    b = []  # Lado direito das restrições
-    num_var = 0  # Número de variáveis
-    num_restr = 0  # Número de restrições
-    maximize = True  # Verifica se é uma maximização ou minimização
-    dual = False  # Verifica se a resolução é pelo dual ou primal
-    restr = []  # restrições
-    signal = []  # Sinais das restrições: <=, >=, =
-    table = []  # Tabela para execução do método simplex
-    base = []  # Indice de X para os valores básicos
-    Cb = []  # Valores em Z das variáveis básicas
-    artificial = False  # Avalia se exixte alguma variavel artificial para usar o método das duas fases
-    base_init = []  # Base inicial do problema para ser aplicado na segunda fase do problema
-    arti_function = []  # Função das Variáveis artificiais
-    novo_z = []  # Novo Z calculado para operração do método das duas fases
-    variable = []  # Lista com as variaveis utilizadas durante a execução do problema
-    exit = False  # Controle a saida do loop de execução
-    error = ''  # Informa qual erro ocorreu na execução do problema
-    var_artificial = []  # Recebe as variaveis artificiais do problema
+
+    def __init__(self, z, b, num_var, num_restr, signal, restr, maximize, dual):
+        self.z = z  # Função a ser maximizada/minimizada
+        self.b = b  # Lado direito das restrições
+        self.num_var = num_var  # Número de variáveis
+        self.num_restr = num_restr  # Número de restrições
+        self.maximize = maximize  # Verifica se é uma maximização ou minimização
+        self.dual = dual  # Verifica se a resolução é pelo dual ou primal
+        self.restr = restr  # restrições
+        self.signal = signal  # Sinais das restrições: <=, >=, =
+        self.table = []  # Tabela para execução do método simplex
+        self.base = []  # Indice de X para os valores básicos
+        self.Cb = []  # Valores em Z das variáveis básicas
+        self.artificial = False  # Avalia se exixte alguma variavel artificial para usar o método das duas fases
+        self.base_init = []  # Base inicial do problema para ser aplicado na segunda fase do problema
+        self.arti_function = []  # Função das Variáveis artificiais
+        self.novo_z = []  # Novo Z calculado para operração do método das duas fases
+        self.variable = []  # Lista com as variaveis utilizadas durante a execução do problema
+        self.exit = False  # Controle a saida do loop de execução
+        self.error = ''  # Informa qual erro ocorreu na execução do problema
+        self.var_artificial = []  # Recebe as variaveis artificiais do problema
+        self.solution = []  # Armazena a solução do problema
 
     '''Método construtor da Classe'''
-
-    def __init__(self, z, b, num_var, num_restr, sinal, restr, maximize, dual):
-        self.num_var = num_var
-        self.num_restr = num_restr
-        self.restr = restr
-        self.signal = sinal
-        self.z = z
-        self.b = b
-        self.maximize = maximize
-        self.dual = dual
-
     '''Análisa se a solução já foi encontrada'''
-
     def out(self):
 
         if np.round(self.table[len(self.table) - 1:, 0:-1].min(), decimals=3) >= 0 or self.exit == True:
@@ -195,6 +186,7 @@ class Simplex:
             self.exit = self.out()
             print('Tabela Simplex:\n', np.round(self.table, decimals=5))
 
+        self.result()
         self.noSolution()
         self.infiniteSolutions()
 
@@ -217,7 +209,7 @@ class Simplex:
                     list.append(self.table[i, self.table.shape[1] - 1] / self.table[i, np.where(
                         self.table[len(self.table) - 1:, 0:-1] == self.table[len(self.table) - 1:, 0:-1].min())[1][0]])
 
-                except:
+                except ArithmeticError:
                     self.error = "Erro 1 - Problema na escolha do Pivô."
             else:
                 list.append(100000000)
@@ -267,13 +259,14 @@ class Simplex:
 
         print('\n|--------------------Resultado-------------------|')
         print('Z =', np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=3))
-
+        self.solution.append(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1])
         for i in range(0, self.num_var):
 
             if self.variable[i] in self.base:
-                print(
-                    f'{self.variable[i]} = {np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1] - 1], decimals=3)}')
+                self.solution.append(np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1] - 1], decimals=3))
+                print(f'{self.variable[i]} = {np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1] - 1], decimals=3)}')
             else:
+                self.solution.append(0)
                 print(f'{self.variable[i]} = 0')
 
     '''Modifica a tabela simplex para utilizar o método na sua forma dual'''

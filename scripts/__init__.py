@@ -1,4 +1,5 @@
 from Simplex import Simplex
+import BranchAndBound as bab
 
 '''Até o momento presente o algoritmo está funcionando para os seguintes problemas:
 Primal:
@@ -46,24 +47,34 @@ signal = ['<=', '<=', '<=']
 t = Simplex(z, b, 3, 3, signal, restr, True, False)
 '''
 # Problema 5
-
+'''
 z = [2, 1, 3]
 restr = [[5, 2, 7], [3, 2, 5]]
 b = [[420], [280]]
 signal = ['=', '>=']
 t = Simplex(z, b, 3, 2, signal, restr, False, False)
-
+'''
 # Problema 6
 '''
 z = [3, 5]
-restr= [[1, 0],[0, 2],[3, 2]]
-b = [[4],[12],[18]]
-signal = ['<=','<=','<=']
+restr= [[1, 0], [0, 2], [3, 2]]
+b = [[4], [12], [18]]
+signal = ['<=', '<=', '<=']
 t = Simplex(z, b, 2, 3, signal, restr, True, False)
 '''
+# Problema 7
+
+z = [5, 8]
+restr = [[1, 1], [5, 9]]
+b = [[6], [45]]
+signal = ['<=', '<=']
+# t = Simplex(z, b, 2, 2, signal, restr, True, False)
 
 # def __init__(self, z, b, num_var, num_restr, signal, restr, maximize, dual):
-t.start()
-t.result()
-if t.error != '':
-    print(t.error)
+# print(t.start())
+# t.result()
+# if t.error != '':
+#     print(t.error)
+
+bab.e(z, b, 2, 2, signal, restr, True, False)
+
