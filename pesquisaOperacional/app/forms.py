@@ -12,9 +12,10 @@ class GenerateProblemSimplex(forms.Form):
 
         
         for i in range(numeroVariaveisDecisao):
-            if i != (numeroVariaveisDecisao - 1):
+            if i != (numeroVariaveisDecisao - 1): # verify if i > 5
                 self.fields[f'x{i}'] = forms.CharField(initial=0, label=f'x{i + 1} + ',
                                                        widget=forms.NumberInput(attrs={'class':'form-control'}))
+                print(self.fields)
             else:
                 self.fields[f'x{i}'] = forms.CharField(initial=0, label=f'x{i + 1}',
                                                        widget=forms.NumberInput(attrs={'class': 'form-control'}))

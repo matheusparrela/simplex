@@ -29,7 +29,9 @@
 
           <div class="row">
 
-            <p>Função Objetivo:</p>
+            <h5>Função Objetivo:</h5>
+            <br><br>
+            
             {% for field in form.visible_fields|slice:sliceObjet %}
               <div class="col">
                 {{ field }}
