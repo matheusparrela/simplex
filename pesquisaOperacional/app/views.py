@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 
 from .Controller.CreateListVariableController import CreateListVariableController
 
-from .forms import MyForm
+from .forms import GenerateProblemSimplex, MyForm
 #from .models import Variable
 
 nlin = 0
@@ -48,11 +48,11 @@ def problemVariables(request):
     else:
         numVariable = int(request.session['numeroVariaveisDecisao'])
         numRestricoes = int(request.session['numeroRestricoes'])
-        form = SecondStepForm(numVariable, numRestricoes)
+        form = GenerateProblemSimplex(numVariable, numRestricoes)
 
-        return render(request, 'formulario2.html', {'form': form, 'numVar': range(numVar), 'numRest': range(numRest)
-                      , 'classCol': f'col-sm-{int(10 / (numVar + 1))}', 'sliceRest': f'{1+numVar}:'
-                      , 'sliceObjet': f'1:{numVar + 1}'})
+        return render(request, 'problemVariables.html', {'form': form, 'numVar': range(numVariable), 'numRest': range(numRestricoes)
+                      , 'classCol': f'col-sm-{int(10 / (numVariable + 1))}', 'sliceRest': f'{1 + numVariable}:'
+                      , 'sliceObjet': f'1:{numVariable + 1}'})
 
 def table(request): 
     return redirect(request, 'table.html')
