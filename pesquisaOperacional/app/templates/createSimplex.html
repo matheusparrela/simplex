@@ -17,7 +17,14 @@
       <h4 class="card-title">Dados do Problema </h4>
       <form action="."  method="post">
             {%csrf_token%}
-            {{ form|crispy }}
+            <div class="form-group">
+              <label>Nº de variáveis:</label>
+              {{form.numeroVariaveisDecisao}}
+          </div>
+          <div class="form-group">
+              <label>Nº de restrições:</label>
+              {{form.numeroRestricoes}}
+          </div>
         <button type="submit" value="Cadastrar dados"  class="btn btn-success">Cadastrar</button>
     </form>
   </div>
