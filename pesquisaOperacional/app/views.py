@@ -1,10 +1,10 @@
-from app.models import Variable
+#from app.models import Variable
 from django.shortcuts import redirect, render
 
 from .Controller.CreateListVariableController import CreateListVariableController
 
 from .forms import MyForm
-from .models import Variable
+#from .models import Variable
 
 nlin = 0
 ncol = 0
@@ -16,31 +16,44 @@ def index(request):
 
 def createSimplex(request):
     if request.method == "GET":
+        request.session.flush()
         form = MyForm()    
-        context = { 
-            'form' : form
-        }
-        return render(request, 'createSimplex.html',context=context)
+
+        return render(request, 'createSimplex.html', {'form': form})
 
     else:
-        form = MyForm(request.POST)
-        
-        if form.is_valid():
-            objectSimplex = form.cleaned_data 
-            nlin = objectSimplex['numeroRestricoes']
-            ncol = objectSimplex['numeroVariaveisDecisao']
-            form.save()    
-        context = {
-            'form': form
-        }
+        #form = MyForm(request.POST)
+        for key in request.POST.keys():
+            if key == 'csrfmiddlewaretoken':
+                continue
+            request.session[key] = request.POST[key]
         return redirect('problemVariables')
 
-
 def problemVariables(request):
-    variable = Variable.objects.all()
-    context = {
-        "variable": variable
-    }
-    
-    return render(request, 'problemVariables.html',context)
+    if request.method == 'POST':
+        numVariable = int(request.session['numeroVariaveisDecisao'])
+        numRestricoes = int(request.session['numeroRestricoes'])
+        url = '/table'
 
+        request.session['objective'] = request.POST['objective']
+
+        for i in range(numVariable):
+            request.session[f'x{i}'] = request.POST[f'x{i}']
+
+        for i in range(numRestricoes):
+            for j in range(numVariable + 2):
+                request.session[f'a{i}{j}'] = request.POST[f'a{i}{j}']
+
+        return redirect(url)
+    else:
+        numVariable = int(request.session['numeroVariaveisDecisao'])
+        numRestricoes = int(request.session['numeroRestricoes'])
+        form = SecondStepForm(numVariable, numRestricoes)
+
+        return render(request, 'formulario2.html', {'form': form, 'numVar': range(numVar), 'numRest': range(numRest)
+                      , 'classCol': f'col-sm-{int(10 / (numVar + 1))}', 'sliceRest': f'{1+numVar}:'
+                      , 'sliceObjet': f'1:{numVar + 1}'})
+
+def table(request): 
+    return redirect(request, 'table.html')
+    
