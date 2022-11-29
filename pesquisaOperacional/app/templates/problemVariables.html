@@ -1,4 +1,3 @@
-
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +13,7 @@
 </head>
 
 <body>
-  
+
 
   </div>
   <div class="card-footer text-muted"></div>
@@ -24,56 +23,53 @@
     <div class="card-header">Gerar Problema</div>
     <div class="card-body">
       <h4 class="card-title">Dados do Problema </h4>
-      <h5>Função</h5>
-      <table>
-      <tr>
-        <th scope="col">X1</th>
-        <th scope="col"></th>
-        <th scope="col">X2</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row"><input type="number" class="form-control" placeholder="x1" aria-label="Last name"style="width: 50%"></th>
-        <td><label for="">+</label></td>
-        <td><input type="number" class="form-control" placeholder="x2" aria-label="Last name" style="width: 50%">
-        </td>
-      </tr>
-    </tbody>
-  </table>
+      <div class="container">
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="row">
+
+            <p>Função Objetivo:</p>
+            {% for field in form.visible_fields|slice:sliceObjet %}
+              <div class="col">
+                {{ field }}
+              </div>
+              <div class="col-form-label">
+                <label>{{ field.label }}</label>
+              </div>            
+            {% endfor %}
+
+          </div>
+
+          <p>Restrições:</p>
+
+          <div class="form-row mb-3">
+            {% for field in form.visible_fields|slice:sliceRest %}
+              <div class="col">
+                {{ field }}
+              </div>
+
+              {% if field.label != "dontShow" and field.label != "signal" %}
+              <div class="col-form-label">
+                <label>{{ field.label }}</label>
+              </div>
+              {% endif %}
+
+              {% if field.label == "dontShow" %}
+            </div>
+            <div class="form-row mb-3">
+              {% endif %}
 
 
+            {% endfor %}
 
+          </div>
 
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">X1</th>
-            <th scope="col"></th>
-            <th scope="col">X2</th>
-            <th scope="col">Maior|Menor|Igual</th>
-            <th scope="col">Result</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row"><input type="number" class="form-control" placeholder="x1" aria-label="Last name"
-                style="width: 50%"></th>
-            <td><label for="">+</label></td>
-            <td><input type="number" class="form-control" placeholder="x2" aria-label="Last name" style="width: 50%">
-            </td>
-            <td><select class="form-select" aria-label="Default select example" style="width: 100%">
-                <option selected>Maior|Menor|Igual</option>
-                <option value="1">Maior Igual</option>
-                <option value="2">Menor Igual</option>
-                <option value="3">Igual</option>
-              </select></td>
-            <td><input type="number" class="form-control" placeholder="result" aria-label="Last name"
-                style="width: 50%"></td>
-          </tr>
+          <input type="submit" value="Continuar" class="btn btn-success">
 
-        </tbody>
-      </table>
+        </form>
+      </div>
+
 
 </body>
 
