@@ -6,8 +6,6 @@ from .Controller.CreateListVariableController import CreateListVariableControlle
 from .forms import GenerateProblemSimplex, MyForm
 #from .models import Variable
 
-nlin = 0
-ncol = 0
 
 # Create your views here.
 def index(request):
@@ -30,10 +28,11 @@ def createSimplex(request):
         return redirect('problemVariables')
 
 def problemVariables(request):
+    
     if request.method == 'POST':
-        numVariable = int(request.session['numeroVariaveisDecisao'])
+        numVariable   = int(request.session['numeroVariaveisDecisao'])
         numRestricoes = int(request.session['numeroRestricoes'])
-        url = '/table'
+        
 
         request.session['objective'] = request.POST['objective']
 
@@ -44,13 +43,14 @@ def problemVariables(request):
             for j in range(numVariable + 2):
                 request.session[f'a{i}{j}'] = request.POST[f'a{i}{j}']
 
-        return redirect(url)
+        return redirect('/table')
+    
     else:
-        numVariable = int(request.session['numeroVariaveisDecisao'])
+        numVariable   = int(request.session['numeroVariaveisDecisao'])
         numRestricoes = int(request.session['numeroRestricoes'])
         form = GenerateProblemSimplex(numVariable, numRestricoes)
 
-        return render(request, 'problemVariables.html', {'form': form, 'numVar': range(numVariable), 'numRest': range(numRestricoes)
+        return render(request, 'problemVariables.html', {'form': form, 'numVariable': range(numVariable), 'numRestricoes': range(numRestricoes)
                       , 'classCol': f'col-sm-{int(10 / (numVariable + 1))}', 'sliceRest': f'{1 + numVariable}:'
                       , 'sliceObjet': f'1:{numVariable + 1}'})
 

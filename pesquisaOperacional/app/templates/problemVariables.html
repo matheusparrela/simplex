@@ -22,15 +22,13 @@
   <div class="card" style="margin-left: 25%; margin-right: 25%; margin-top: 3%;">
     <div class="card-header">Gerar Problema</div>
     <div class="card-body">
-      <h4 class="card-title">Dados do Problema </h4>
+      <h4 class="card-title">Função Objetivo: </h4>
       <div class="container">
         <form method="post">
           {% csrf_token %}
 
           <div class="row">
-
-            <h5>Função Objetivo:</h5>
-            <br><br>
+          
             
             {% for field in form.visible_fields|slice:sliceObjet %}
               <div class="col">
@@ -51,22 +49,18 @@
                 {{ field }}
               </div>
 
-              {% if field.label != "dontShow" and field.label != "signal" %}
+              {% if field.label != "break" and field.label != "signal" %}
               <div class="col-form-label">
                 <label>{{ field.label }}</label>
               </div>
               {% endif %}
 
-              {% if field.label == "dontShow" %}
+              {% if field.label == "break" %}
             </div>
             <div class="form-row mb-3">
               {% endif %}
-
-
             {% endfor %}
-
           </div>
-
           <input type="submit" value="Continuar" class="btn btn-success">
 
         </form>
