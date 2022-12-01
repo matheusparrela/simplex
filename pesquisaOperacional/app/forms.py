@@ -17,18 +17,17 @@ class GenerateProblemSimplex(forms.Form):
     def __init__(self, numeroVariaveisDecisao, numeroRestricoes, *args, **kwargs):
         super(GenerateProblemSimplex, self).__init__(*args, **kwargs)
         
-        
         objectiveFunction = [('MAXIMIZE', 'Maximizar'), ('MINIMIZE', 'Minimizar')]
         self.fields['objective'] = forms.ChoiceField(choices= objectiveFunction, label='objective', widget=forms.Select(attrs={'class':'form-control'}))
                
 
-        for i in range(numeroVariaveisDecisao + 1):
-            if i != (numeroVariaveisDecisao): # check if i > 5
-                self.fields[f'x{i}'] = forms.CharField(initial=0, label=f'x{i} + ',
+        for i in range(numeroVariaveisDecisao ):
+            if i != (numeroVariaveisDecisao-1): # check if i > 5
+                self.fields[f'x{i}+'] = forms.CharField(initial=0, label=f'x{i + 1} + ',
                     widget=forms.NumberInput(attrs={'class':'form-control'}))
                 
             else:
-                self.fields[f'x{i}'] = forms.CharField(initial=0, label=f'x{i}',
+                self.fields[f'x{i}'] = forms.CharField(initial=0, label=f'x{i+1}',
                     widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
         for rows in range(numeroRestricoes):
