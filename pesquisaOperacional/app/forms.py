@@ -7,10 +7,10 @@ class MyForm(forms.Form):
         ('PRIMAL', 'Primal'),
         ('DUAL', 'Dual')
     ]
-    
-    numeroRestricoes       =  forms.IntegerField(label='Número de Restrições',widget=forms.NumberInput(attrs={'class':'form-control'}))
-    numeroVariaveisDecisao =  forms.IntegerField(label='Número de variáveis', widget=forms.NumberInput(attrs={'class':'form-control'}))
-    method = forms.ChoiceField(choices=IMethod, widget=forms.RadioSelect(attrs={'class':'form-check-input'}), label='Método')
+    selectSolution         = forms.BooleanField(label="Utilizar solução inteira", required=False,widget=forms.CheckboxInput(attrs={'class':'form-check-input'}))
+    numeroRestricoes       = forms.IntegerField(label='Número de Restrições',widget=forms.NumberInput(attrs={'class':'form-control'}))
+    numeroVariaveisDecisao = forms.IntegerField(label='Número de variáveis', widget=forms.NumberInput(attrs={'class':'form-control'}))
+    method                 = forms.ChoiceField(choices=IMethod, widget=forms.RadioSelect(attrs={'class':'form-check-input'}), label='Método')
     
                             
 class GenerateProblemSimplex(forms.Form):

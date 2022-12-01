@@ -26,11 +26,14 @@
       <div class="container">
         <form method="post">
           {% csrf_token %}
-
-          <div class="row">
-          
-            
-            {% for field in form.visible_fields|slice:sliceObjet %}
+  
+            <div class="row"> 
+              <div class="col-md-3">
+                      {{ form.objective }}
+              </div>
+            </div>
+            <div class="row" style="padding: 1%;">
+              {% for field in form.visible_fields|slice:sliceObjet %}
               <div class="col">
                 {{ field }}
               </div>

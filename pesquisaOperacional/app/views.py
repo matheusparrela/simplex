@@ -11,7 +11,6 @@ from .forms import GenerateProblemSimplex, MyForm
 def index(request):
     return render(request, 'index.html')
 
-
 def createSimplex(request):
     if request.method == "GET":
         request.session.flush()
@@ -30,10 +29,10 @@ def createSimplex(request):
 def problemVariables(request):
     
     if request.method == 'POST':
+        #recebo via request as duas veriaveis 
         numVariable   = int(request.session['numeroVariaveisDecisao'])
         numRestricoes = int(request.session['numeroRestricoes'])
-        
-
+    
         request.session['objective'] = request.POST['objective']
 
         for i in range(numVariable):
@@ -48,11 +47,16 @@ def problemVariables(request):
     else:
         numVariable   = int(request.session['numeroVariaveisDecisao'])
         numRestricoes = int(request.session['numeroRestricoes'])
-        form = GenerateProblemSimplex(numVariable, numRestricoes)
+        context = GenerateProblemSimplex(numVariable, numRestricoes)
 
-        return render(request, 'problemVariables.html', {'form': form, 'numVariable': range(numVariable), 'numRestricoes': range(numRestricoes)
-                      , 'classCol': f'col-sm-{int(10 / (numVariable + 1))}', 'sliceRest': f'{1 + numVariable}:'
-                      , 'sliceObjet': f'1:{numVariable + 1}'})
+        return render(request, 'problemVariables.html', {
+            'form'         : context,
+            'numVariable'  : range(numVariable),
+            'numRestricoes': range(numRestricoes),
+            'classCol'     : f'col-sm-{int(10 / (numVariable + 1))}',
+            'sliceRest'    : f'{1 + numVariable}:',
+            'sliceObjet'   : f'1:{numVariable + 1}'
+        })
 
 def table(request): 
     return redirect(request, 'table.html')
