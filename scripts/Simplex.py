@@ -136,7 +136,7 @@ class Simplex:
             for i in range(0, len(self.z)):
                 self.z[i] = self.z[i] * -1
 
-            print(self.z)
+            #print(self.z)
 
         self.objectiveFunction()
         self.table = np.vstack([self.table, self.novo_z])
@@ -150,15 +150,15 @@ class Simplex:
 
         self.base[pos_pivo[0]] = self.variable[pos_pivo[1]]
         self.Cb[pos_pivo[0]] = self.z[pos_pivo[1]]
-        print('Base: ', self.base)
-        print('Cb', self.Cb)
+        # print('Base: ', self.base)
+        # print('Cb', self.Cb)
 
     '''Método de resolução usando o simplex'''
 
     def start(self):
 
         self.organizeTable()
-        print('Tabela Simplex:\n', np.round(self.table, decimals=3))
+        # print('Tabela Simplex:\n', np.round(self.table, decimals=3))
 
         '''Se existir variáveis artificiais resolvemos usando o método das duas fases'''
         if self.artificial:
@@ -166,25 +166,25 @@ class Simplex:
             '''Enquanto Z diferente de 0'''
             while (self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] != 0) and (not self.out()):
                 self.solveSimplex()
-                print('Tabela Simplex:\n', np.round(self.table, decimals=3))
+                #print('Tabela Simplex:\n', np.round(self.table, decimals=3))
 
             if self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] == 0:
                 '''Apaga as colunas das variáveis artificiais para aplicar a 2 fase'''
                 for i in range(0, len(self.base_init)):
                     self.table = np.delete(self.table, self.base_init[i] - i - 1, axis=1)
-                    print('Tabela Simplex:\n', np.round(self.table, decimals=3))
+                    #print('Tabela Simplex:\n', np.round(self.table, decimals=3))
                     self.variable.pop(self.base_init[i] - i - 1)
                 self.exit = False
 
             '''Fase II'''
             self.objectiveFunctionFaseII()
-            print('Tabela Simplex:\n', np.round(self.table, decimals=3), '\n')
+            #print('Tabela Simplex:\n', np.round(self.table, decimals=3), '\n')
 
         '''Enquanto existir na função objetivo Z valores menores que 0'''
         while not self.exit:
             self.solveSimplex()
             self.exit = self.out()
-            print('Tabela Simplex:\n', np.round(self.table, decimals=5))
+            #print('Tabela Simplex:\n', np.round(self.table, decimals=5))
 
         self.result()
         self.noSolution()
@@ -230,7 +230,7 @@ class Simplex:
         self.basicVariables(pos_pivo)
 
         pivo = self.table[pos_pivo[0], pos_pivo[1]]
-        print('Pivo:', pivo)
+        #print('Pivo:', pivo)
 
         if pivo != 0:
             '''Realiza o manipulação das linhas'''

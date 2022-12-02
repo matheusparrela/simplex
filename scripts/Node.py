@@ -1,3 +1,11 @@
+class Node:
+
+    def __init__(self, key, esq, dir):
+        self.item = key
+        self.esq = esq
+        self.dir = dir
+
+
 import math
 from Simplex import Simplex
 from Node import Node
@@ -74,36 +82,33 @@ class BranchAndBound:
                     new_restr.append(1)
                 else:
                     new_restr.append(0)
-            '''
+
+            teste = []
+
             if novo.esq is None:  # Verificar a condição que determina qual o galhoa arvore deve seguir.
-                new_signal = '<='
-                new_b = int(solution[residue.index(max(residue))] + 1)
-
-                # Analisa se as novas restrições são válidas ou impossíveis
-                if not self.validityOfRestrictions(new_restr, new_signal, new_b):
-                    self.restr.append(new_restr)
-                    self.signal.append(new_signal)
-                    self.b.append([new_b])
-                    print(self.z, self.b, self.signal, self.restr)
-                    self.z.pop()
-                    self.z.pop()
-                    self.z.pop()
-
-                    t = Simplex(self.z, self.b, self.num_var, self.num_restr+1, self.signal, self.restr, self.maximize, self.dual)
-                    t.start()
-            '''
-            if novo.dir is None:
                 new_signal = '>='
-                new_b = int(solution[residue.index(max(residue))] + 1) + 1
+                new_b = int(solution[teste.index(max(teste))] + 1)
 
-               # Analisa se as novas restrições são válidas ou impossíveis
-                if not self.validityOfRestrictions(new_restr, new_signal, new_b):
+                '''Analisa se as novas restrições são válidas ou impossíveis'''
+                if self.validityOfRestrictions(new_restr, new_signal, new_b):
                     self.restr.append(new_restr)
                     self.signal.append(new_signal)
-                    self.b.append([new_b])
-                    self.z.pop()
-                    self.z.pop()
-                    self.z.pop()
-                    r = Simplex(self.z, self.b, self.num_var, self.num_restr+1, self.signal, self.restr, self.maximize, self.dual)
-                    r.start()
-            
+                    self.b.append(new_b)
+
+                    self.BAB()
+
+            elif novo.dir is None:
+                new_signal = '<='
+                new_b = int(solution[teste.index(max(teste))] + 1) + 1
+
+                '''Analisa se as novas restrições são válidas ou impossíveis'''
+                if self.validityOfRestrictions(new_restr, new_signal, new_b):
+                    self.restr.append(new_restr)
+                    self.signal.append(new_signal)
+                    self.b.append(new_b)
+                    self.BAB()
+
+            else:
+                return 'impossivel'
+
+

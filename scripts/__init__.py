@@ -1,5 +1,6 @@
 from Simplex import Simplex
-import BranchAndBound as bab
+from BranchAndBound import BranchAndBound
+
 
 '''Até o momento presente o algoritmo está funcionando para os seguintes problemas:
 Primal:
@@ -76,5 +77,8 @@ signal = ['<=', '<=']
 # if t.error != '':
 #     print(t.error)
 
-bab.e(z, b, 2, 2, signal, restr, True, False)
+t = None
+solution = None
+q = BranchAndBound(z, b, 2, 2, signal, restr, True, False)
+q.BAB()
 
