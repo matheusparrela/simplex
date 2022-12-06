@@ -63,6 +63,7 @@ b = [[4], [12], [18]]
 signal = ['<=', '<=', '<=']
 t = Simplex(z, b, 2, 3, signal, restr, True, False)
 '''
+
 # Problema 7
 
 z = [5, 8]
@@ -77,8 +78,13 @@ signal = ['<=', '<=']
 # if t.error != '':
 #     print(t.error)
 
-t = None
-solution = None
-q = BranchAndBound(z, b, 2, 2, signal, restr, True, False)
-q.BAB()
 
+q = BranchAndBound(z, b, 2, 2, signal, restr, True, False)
+q.BAB(z, b, 2, 2, signal, restr, True, False)
+
+'''
+# def __init__(self, z, b, num_var, num_restr, signal, restr, maximize, dual):
+print(t.start())
+if t.error != '':
+   print(t.error)
+'''
