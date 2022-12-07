@@ -28,6 +28,7 @@ class Simplex:
 
     '''Método construtor da Classe'''
     '''Análisa se a solução já foi encontrada'''
+
     def out(self):
 
         if np.round(self.table[len(self.table) - 1:, 0:-1].min(), decimals=5) >= 0 or self.exit == True:
@@ -149,22 +150,17 @@ class Simplex:
 
         self.base[self.pos_pivo[0]] = self.variable[self.pos_pivo[1]]
         self.Cb[self.pos_pivo[0]] = self.z[self.pos_pivo[1]]
-        #print('Base: ', self.base)
-        #print('Cb', self.Cb)
 
     def basicVariablesFaseI(self):
 
         self.base[self.pos_pivo[0]] = self.variable[self.pos_pivo[1]]
         self.Cb[self.pos_pivo[0]] = self.arti_function[self.pos_pivo[1]]
-        #print('Base: ', self.base)
-        #print('Cb', self.Cb)
 
     '''Método de resolução usando o simplex'''
 
     def start(self):
 
         self.organizeTable()
-        #print('Tabela Simplex:\n', np.round(self.table, decimals=3))
 
         '''Se existir variáveis artificiais resolvemos usando o método das duas fases'''
         if self.artificial:
@@ -174,19 +170,16 @@ class Simplex:
                 self.solveSimplex()
                 self.basicVariablesFaseI()
 
-                #print('Tabela Simplex:\n', np.round(self.table, decimals=3))
-
             if self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] == 0:
                 '''Apaga as colunas das variáveis artificiais para aplicar a 2 fase'''
                 for i in range(0, len(self.base_init)):
                     self.table = np.delete(self.table, self.base_init[i] - i - 1, axis=1)
-                    #print('Tabela Simplex:\n', np.round(self.table, decimals=3))
+                    # print('Tabela Simplex:\n', np.round(self.table, decimals=3))
                     self.variable.pop(self.base_init[i] - i - 1)
                 self.exit = False
 
             '''Fase II'''
             self.objectiveFunctionFaseII()
-            #print('Tabela Simplex:\n', np.round(self.table, decimals=3), '\n')
 
         '''Enquanto existir na função objetivo Z valores menores que 0'''
         while not self.exit:
@@ -194,7 +187,6 @@ class Simplex:
             self.exit = self.out()
             '''Atualiza as variaveis da base'''
             self.basicVariablesFaseII()
-            #print('Tabela Simplex:\n', np.round(self.table, decimals=5))
 
         self.result()
         self.noSolution()
@@ -203,7 +195,7 @@ class Simplex:
     '''Método de resolução usando o simplex'''
 
     def solveSimplex(self):
-        
+
         self.pos_pivo = []
         list = []
 
@@ -236,7 +228,6 @@ class Simplex:
             self.exit = True
 
         pivo = self.table[self.pos_pivo[0], self.pos_pivo[1]]
-        #print('Pivo:', pivo)
 
         if pivo != 0:
             '''Realiza o manipulação das linhas'''
@@ -269,8 +260,10 @@ class Simplex:
         for i in range(0, self.num_var):
 
             if self.variable[i] in self.base:
-                self.solution.append(np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1] - 1], decimals=5))
-                print(f'{self.variable[i]} = {np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1] - 1], decimals=5)}')
+                self.solution.append(
+                    np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1] - 1], decimals=5))
+                print(
+                    f'{self.variable[i]} = {np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1] - 1], decimals=5)}')
             else:
                 self.solution.append(0)
                 print(f'{self.variable[i]} = 0')
@@ -332,7 +325,8 @@ class Simplex:
 
         for i in range(0, self.num_var):
             if self.variable[i] not in self.base:
-                if np.round(self.table[self.table.shape[0]-1, self.variable.index(self.variable[i])], decimals=5) == 0:
+                if np.round(self.table[self.table.shape[0] - 1, self.variable.index(self.variable[i])],
+                            decimals=5) == 0:
                     self.error = 'Erro 4 - Infinitas Soluções.'
 
     '''Não existe solução: quando nenhum ponto satisfaz às restrições do problema, ocorre a inviabilidade, 
@@ -343,5 +337,5 @@ class Simplex:
 
         for i in range(0, len(self.base)):
             if self.base[i] in self.var_artificial:
-                if self.table[self.base.index(self.base[i]), self.table.shape[1]-1] > 0:
+                if self.table[self.base.index(self.base[i]), self.table.shape[1] - 1] > 0:
                     self.error = 'Erro 5 - Não existe solução.'
