@@ -34,9 +34,8 @@ def problemVariables(request):
         numRestricoes = int(request.session['numeroRestricoes'])
     
         request.session['objective'] = request.POST['objective']
-
         for rows in range(numVariable):
-            request.session[f'x{rows:02d}'] = request.POST[f'x{rows}']
+            request.session[f'x{rows}'] = request.POST[f'x{rows}']
 
         for rows in range(numRestricoes):
             for columns in range(numVariable + 2):

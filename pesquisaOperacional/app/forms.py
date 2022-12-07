@@ -23,12 +23,12 @@ class GenerateProblemSimplex(forms.Form):
 
         for rows in range(numeroVariaveisDecisao ):
             if rows != (numeroVariaveisDecisao-1): # check if i > 5
-                self.fields[f'x{rows}+'] = forms.DecimalField(label=f'x{rows + 1} + ',
-                    widget=forms.NumberInput(attrs={'class':'form-control'}))
+                self.fields[f'x{rows:02d}'] = forms.DecimalField(label=f'x{rows + 1} + ',
+                    widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':f'x{rows + 1}'}))
                 
             else:
                 self.fields[f'x{rows}'] = forms.DecimalField(initial=0, label=f'x{rows+1}',
-                    widget=forms.NumberInput(attrs={'class': 'form-control'}))
+                    widget=forms.NumberInput(attrs={'class': 'form-control','placeholder':f'x{rows + 1}'}))
 
         for rows in range(numeroRestricoes):
             for columns in range(numeroVariaveisDecisao + 2):
@@ -37,8 +37,8 @@ class GenerateProblemSimplex(forms.Form):
                     self.fields[f'{rows}{columns}'] = forms.ChoiceField(choices=choices, label='signal', widget=forms.Select(attrs={'class':'form-control'}))
                 elif columns < numeroVariaveisDecisao:
                     if columns != (numeroVariaveisDecisao - 1):
-                        self.fields[f'a{rows}{columns}'] = forms.DecimalField(initial=0, label=f'x{columns + 1} + ', widget=forms.NumberInput(attrs={'class':'form-control'}))
+                        self.fields[f'a{rows}{columns}'] = forms.DecimalField(label=f'x{columns + 1} + ', widget=forms.NumberInput(attrs={'class':'form-control'}))
                     else:
-                        self.fields[f'a{rows}{columns}'] = forms.DecimalField(initial=0, label=f'x{columns + 1}',widget=forms.NumberInput(attrs={'class':'form-control'}))
+                        self.fields[f'a{rows}{columns}'] = forms.DecimalField(label=f'x{columns + 1}',widget=forms.NumberInput(attrs={'class':'form-control'}))
                 else:
-                    self.fields[f'a{rows}{columns}'] = forms.DecimalField(initial=0, label=f'break', widget=forms.NumberInput(attrs={'class':'form-control'}))  
+                    self.fields[f'a{rows}{columns}'] = forms.DecimalField(label=f'break', widget=forms.NumberInput(attrs={'class':'form-control'}))  
