@@ -34,13 +34,12 @@ def problemVariables(request):
         numRestricoes = int(request.session['numeroRestricoes'])
     
         request.session['objective'] = request.POST['objective']
+        for rows in range(numVariable):
+            request.session[f'x{rows}'] = request.POST[f'x{rows}']
 
-        for i in range(numVariable):
-            request.session[f'x{i}'] = request.POST[f'x{i}']
-
-        for i in range(numRestricoes):
-            for j in range(numVariable + 2):
-                request.session[f'a{i}{j}'] = request.POST[f'a{i}{j}']
+        for rows in range(numRestricoes):
+            for columns in range(numVariable + 2):
+                request.session[f'a{rows:02d}{columns:02d}'] = request.POST[f'a{rows:02d}{columns:02d}']
 
         return redirect('/table')
     
