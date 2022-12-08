@@ -37,8 +37,8 @@ class GenerateProblemSimplex(forms.Form):
                     self.fields[f'{rows}{columns}'] = forms.ChoiceField(choices=choices, label='signal', widget=forms.Select(attrs={'class':'form-control'}))
                 elif columns < numeroVariaveisDecisao:
                     if columns != (numeroVariaveisDecisao - 1):
-                        self.fields[f'a{rows}{columns}'] = forms.DecimalField(label=f'x{columns + 1} + ', widget=forms.NumberInput(attrs={'class':'form-control'}))
+                        self.fields[f'n{rows}{columns}'] = forms.DecimalField(label=f'x{columns + 1} + ', widget=forms.NumberInput(attrs={'class':'form-control'}))
                     else:
-                        self.fields[f'a{rows}{columns}'] = forms.DecimalField(label=f'x{columns + 1}',widget=forms.NumberInput(attrs={'class':'form-control'}))
+                        self.fields[f'n{rows}{columns}'] = forms.DecimalField(label=f'x{columns + 1}',widget=forms.NumberInput(attrs={'class':'form-control'}))
                 else:
-                    self.fields[f'a{rows}{columns}'] = forms.DecimalField(label=f'break', widget=forms.NumberInput(attrs={'class':'form-control'}))  
+                    self.fields[f'n{rows}{columns}'] = forms.DecimalField(label=f'break', widget=forms.NumberInput(attrs={'class':'form-control'}))  
