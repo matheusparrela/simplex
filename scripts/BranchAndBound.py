@@ -5,11 +5,16 @@ from Node import Node
 
 class BranchAndBound:
 
-    def __init__(self, z, b, num_var, num_restr, signal, restr, maximize, dual):
+    def __init__(self, maximize):
         self.root = Node(None, None, None)
         self.root = None
+        self.table_solution = []
+        self.maximize = maximize
+        self.iteracao = -1
+        self.int_solution = 0
 
     def integerSolution(self, solution):
+
         test = []
         for i in range(0, len(solution)):
             if math.trunc(solution[i]) == solution[i]:
@@ -18,7 +23,6 @@ class BranchAndBound:
                 test.append(1)
         if len(set(test)) == 1 and test[1] != 1:
             return 'VIAVEL'
-
         else:
             return 'INVIAVEL'
 
@@ -26,8 +30,8 @@ class BranchAndBound:
 
         if self.integerSolution(solution) == 'VIAVEL':
             return True
-
-        return False
+        else:
+            return False
 
     def validityOfRestrictions(self, b, restr, signal, new_restr, new_signal, new_b):
 
@@ -37,24 +41,41 @@ class BranchAndBound:
                     return True
         return False
 
-
     def result(self):
-        pass
+        print('\n|------------------Resultado B&B-----------------|\n')
+        for i in range(0, len(self.table_solution)):
+            print(self.table_solution[i])
 
+        if self.maximize is True:
+            self.int_solution = [-100000000000]
+            for i in range(1, len(self.table_solution)):
+                if self.table_solution[i][len(self.table_solution[0]) - 1] == 'VIAVEL':
+                    if self.table_solution[i][0] <= self.table_solution[0][0]:
+                        if self.table_solution[i][0] >= self.int_solution[0]:
+                            self.int_solution = self.table_solution[i].copy()
+        else:
+            self.int_solution = [100000000000]
+            for i in range(1, len(self.table_solution)):
+                if self.table_solution[i][len(self.table_solution[0]) - 1] == 'VIAVEL':
+                    if self.table_solution[i][0] >= self.table_solution[0][0]:
+                        if self.table_solution[i][0] <= self.int_solution[0]:
+                            self.int_solution = self.table_solution[i].copy()
+
+        print('Solução Inteira:', self.int_solution)
 
     def BAB(self, z, b, num_var, num_restr, signal, restr, maximize, dual):
 
         novo = Node(Simplex(z, b, num_var, num_restr, signal, restr, maximize, dual), None, None)  # cria um Nó
         novo.item.start()
-        if novo.item.error != '':
-            print(novo.item.error)
-        
+        self.table_solution.append(novo.item.solution.copy())
+        self.iteracao += 1
+
         if novo.item.error == 'Erro 5 - Não existe solução.':
+            self.table_solution[self.iteracao].append('IMPOSSIVEL')
             return 'IMPOSSIVEL'
 
-
-        if self.viability(novo.item.solution):
-            return novo.item.solution
+        if self.root is None:  # Verifica se o primeiro nó da árvore existe
+            self.root = novo
 
         atual = self.root  # se nao for a raiz
 
@@ -64,57 +85,59 @@ class BranchAndBound:
         for i in range(1, len(novo.item.solution)):
             residue.append(novo.item.solution[i] - int(novo.item.solution[i]))
 
-        '''Monta a nova restrição para o problema'''
-        new_restr = []
-        for i in range(0, len(novo.item.solution) - 1):
-            if i == residue.index(max(residue)):
-                new_restr.append(1)
-            else:
-                new_restr.append(0)
+        if self.viability(novo.item.solution):
+            self.table_solution[self.iteracao].append('VIAVEL')
+            return novo.item.solution
 
-        if self.root is None:  # Verifica se o primeiro nó da árvore existe
-            self.root = novo
-            #  self.BAB(z, b1, num_var, num_restr + 1, signal1, restr1, maximize, dual)
+        else:
+            self.table_solution[self.iteracao].append('INVIAVEL')
+            '''Monta a nova restrição para o problema'''
+            new_restr = []
+            for i in range(0, len(novo.item.solution) - 1):
+                if i == residue.index(max(residue)):
+                    new_restr.append(1)
+                else:
+                    new_restr.append(0)
 
-        if novo.dir is None:
-            new_signal = '>='
-            new_b = int(novo.item.solution[residue.index(max(residue))+ 1]) + 1
+            if novo.dir is None:
+                new_signal = '>='
+                new_b = int(novo.item.solution[residue.index(max(residue)) + 1]) + 1
 
-            restr2 = restr.copy()
-            signal2 = signal.copy()
-            b2 = b.copy()
+                restr2 = restr.copy()
+                signal2 = signal.copy()
+                b2 = b.copy()
 
-            # Analisa se as novas restrições são válidas ou impossíveis
-            if not self.validityOfRestrictions(b, restr, signal, new_restr, new_signal, new_b):
-                restr2.append(new_restr)
-                signal2.append(new_signal)
-                b2.append([new_b])
-                z.pop()
-                z.pop()
-                z.pop()
-                self.BAB(z, b2, num_var, len(restr2), signal2, restr2, maximize, dual)
+                # Analisa se as novas restrições são válidas ou impossíveis
+                if not self.validityOfRestrictions(b, restr, signal, new_restr, new_signal, new_b):
+                    restr2.append(new_restr)
+                    signal2.append(new_signal)
+                    b2.append([new_b])
+                    z.pop()
+                    z.pop()
+                    z.pop()
+                    self.BAB(z, b2, num_var, len(restr2), signal2, restr2, maximize, dual)
+                else:
+                    self.table_solution[self.iteracao].append('IMPOSSIVEL')
+                    return 'IMPOSSIVEL'
 
-            else:
-                return 'IMPOSSIVEL'
+            if novo.esq is None:  # Verificar a condição que determina qual o galhoa arvore deve seguir.
 
-        if novo.esq is None:  # Verificar a condição que determina qual o galhoa arvore deve seguir.
+                new_signal = '<='
+                new_b = int(novo.item.solution[residue.index(max(residue)) + 1])
 
-            new_signal = '<='
-            new_b = int(novo.item.solution[residue.index(max(residue))+ 1])
+                restr1 = restr.copy()
+                signal1 = signal.copy()
+                b1 = b.copy()
 
-            restr1 = restr.copy()
-            signal1 = signal.copy()
-            b1 = b.copy()
-
-            # Analisa se as novas restrições são válidas ou impossíveis
-            if not self.validityOfRestrictions(b, restr, signal, new_restr, new_signal, new_b):
-                restr1.append(new_restr)
-                signal1.append(new_signal)
-                b1.append([new_b])
-                z.pop()
-                z.pop()
-                z.pop()
-                self.BAB(z, b1, num_var,  len(restr2), signal1, restr1, maximize, dual)
-
-            else:
-                return 'IMPOSSIVEL'
+                # Analisa se as novas restrições são válidas ou impossíveis
+                if not self.validityOfRestrictions(b, restr, signal, new_restr, new_signal, new_b):
+                    restr1.append(new_restr)
+                    signal1.append(new_signal)
+                    b1.append([new_b])
+                    z.pop()
+                    z.pop()
+                    z.pop()
+                    self.BAB(z, b1, num_var,  len(restr1), signal1, restr1, maximize, dual)
+                else:
+                    self.table_solution[self.iteracao].append('IMPOSSIVEL')
+                    return 'IMPOSSIVEL'

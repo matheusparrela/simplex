@@ -188,9 +188,9 @@ class Simplex:
             '''Atualiza as variaveis da base'''
             self.basicVariablesFaseII()
 
-        self.result()
         self.noSolution()
         self.infiniteSolutions()
+        self.result()
 
     '''Método de resolução usando o simplex'''
 
@@ -255,18 +255,21 @@ class Simplex:
                                                                                       self.table.shape[1] - 1] * -1
 
         print('\n|--------------------Resultado-------------------|')
-        print('Z =', np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=5))
-        self.solution.append(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1])
+        print('Z =', np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=3))
+        self.solution.append(np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=3))
         for i in range(0, self.num_var):
 
             if self.variable[i] in self.base:
                 self.solution.append(
-                    np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1] - 1], decimals=5))
+                    np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1] - 1], decimals=3))
                 print(
-                    f'{self.variable[i]} = {np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1] - 1], decimals=5)}')
+                    f'{self.variable[i]} = {np.round(self.table[self.base.index(self.variable[i]), self.table.shape[1] - 1], decimals=3)}')
             else:
                 self.solution.append(0)
                 print(f'{self.variable[i]} = 0')
+
+        if self.error != '':
+            print(self.error)
 
     '''Modifica a tabela simplex para utilizar o método na sua forma dual'''
 

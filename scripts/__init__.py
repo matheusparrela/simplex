@@ -73,18 +73,9 @@ signal = ['<=', '<=']
 # t = Simplex(z, b, 2, 2, signal, restr, True, False)
 
 # def __init__(self, z, b, num_var, num_restr, signal, restr, maximize, dual):
-# print(t.start())
-# t.result()
-# if t.error != '':
-#     print(t.error)
+# t.start()
 
 
-q = BranchAndBound(z, b, 2, 2, signal, restr, True, False)
+q = BranchAndBound(True)
 q.BAB(z, b, 2, 2, signal, restr, True, False)
-
-'''
-# def __init__(self, z, b, num_var, num_restr, signal, restr, maximize, dual):
-print(t.start())
-if t.error != '':
-   print(t.error)
-'''
+q.result()

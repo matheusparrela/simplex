@@ -1,0 +1,2 @@
+def analysis(problema):
+    pass
