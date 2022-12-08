@@ -23,11 +23,11 @@ class GenerateProblemSimplex(forms.Form):
 
         for rows in range(numeroVariaveisDecisao ):
             if rows != (numeroVariaveisDecisao-1): # check if i > 5
-                self.fields[f'x{rows:02d}'] = forms.DecimalField(label=f'x{rows + 1} + ',
+                self.fields[f'x{rows}'] = forms.DecimalField(label=f'x{rows + 1} + ',initial=0,
                     widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':f'x{rows + 1}'}))
                 
             else:
-                self.fields[f'x{rows}'] = forms.DecimalField(initial=0, label=f'x{rows+1}',
+                self.fields[f'x{rows}'] = forms.DecimalField(label=f'x{rows+1}', initial=0,
                     widget=forms.NumberInput(attrs={'class': 'form-control','placeholder':f'x{rows + 1}'}))
 
         for rows in range(numeroRestricoes):
