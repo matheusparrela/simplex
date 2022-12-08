@@ -40,7 +40,7 @@ def problemVariables(request):
 
         for rows in range(numRestricoes):
             for columns in range(numVariable + 2):
-                request.session[f'{rows}{columns}'] = request.POST[f'{rows}{columns}']
+                request.session[f'n{rows}{columns}'] = request.POST[f'n{rows}{columns}']
 
         return redirect('/table')
     
