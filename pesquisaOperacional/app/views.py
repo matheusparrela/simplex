@@ -1,8 +1,5 @@
 #from app.models import Variable
 from django.shortcuts import redirect, render
-
-from .Controller.CreateListVariableController import CreateListVariableController
-
 from .forms import GenerateProblemSimplex, MyForm
 #from .models import Variable
 
@@ -19,7 +16,6 @@ def createSimplex(request):
         return render(request, 'createSimplex.html', {'form': form})
 
     else:
-        #form = MyForm(request.POST)
         for key in request.POST.keys():
             if key == 'csrfmiddlewaretoken':
                 continue
@@ -29,30 +25,29 @@ def createSimplex(request):
 def problemVariables(request):
     
     if request.method == 'POST':
-        #recebo via request as duas veriaveis 
-        numVariable   = int(request.session['numeroVariaveisDecisao'])
-        numRestricoes = int(request.session['numeroRestricoes'])
-    
+        numConstraints = int(request.session['numConstraints'])
+        numVariable    =  int(request.session['numVariable'])
+        
         request.session['objective'] = request.POST['objective']
         
         for i in range(numVariable):
             request.session[f'x{i}'] = request.POST[f'x{i}']
 
-        for rows in range(numRestricoes):
+        for rows in range(numConstraints):
             for columns in range(numVariable + 2):
                 request.session[f'n{rows}{columns}'] = request.POST[f'n{rows}{columns}']
 
         return redirect('/table')
     
     else:
-        numVariable   = int(request.session['numeroVariaveisDecisao'])
-        numRestricoes = int(request.session['numeroRestricoes'])
-        context = GenerateProblemSimplex(numVariable, numRestricoes)
+        numVariable    = int(request.session['numVariable'])
+        numConstraints = int(request.session['numConstraints'])
+        context        = GenerateProblemSimplex(numVariable, numConstraints)
 
         return render(request, 'problemVariables.html', {
             'form'         : context,
             'numVariable'  : range(numVariable),
-            'numRestricoes': range(numRestricoes),
+            'numConstraints': range(numConstraints),
             'classCol'     : f'col-sm-{int(10 / (numVariable + 1))}',
             'sliceRest'    : f'{1 + numVariable}:',
             'sliceObjet'   : f'1:{numVariable + 1}'
