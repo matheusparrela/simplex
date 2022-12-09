@@ -35,7 +35,7 @@ def problemVariables(request):
 
         for rows in range(numConstraints):
             for columns in range(numVariable + 2):
-                request.session[f'n{rows}{columns}'] = request.POST[f'n{rows}{columns}']
+                request.session[f'x{rows}{columns}'] = request.POST[f'x{rows}{columns}']
 
         return redirect('/table')
     
@@ -45,9 +45,9 @@ def problemVariables(request):
         context        = GenerateProblemSimplex(numVariable, numConstraints)
 
         return render(request, 'problemVariables.html', {
-            'form'         : context,
             'numVariable'  : range(numVariable),
             'numConstraints': range(numConstraints),
+            'form'         : context,           
             'classCol'     : f'col-sm-{int(10 / (numVariable + 1))}',
             'sliceRest'    : f'{1 + numVariable}:',
             'sliceObjet'   : f'1:{numVariable + 1}'
