@@ -1,16 +1,7 @@
 from Simplex import Simplex
 from BranchAndBound import BranchAndBound
-
-
-'''Até o momento presente o algoritmo está funcionando para os seguintes problemas:
-Primal:
-Problemas {1, 2, 3, 4, 5, 6}
-
-Dual:
-Problemas {5}
-
-Os demais não foram testados devido ao site phpsimplex está fora do ar.
-'''
+from SensitivityAnalysis import SensitivityAnalysis
+import graphicalSolution as gs
 
 # Problema 1
 '''
@@ -72,10 +63,15 @@ b = [[6], [45]]
 signal = ['<=', '<=']
 # t = Simplex(z, b, 2, 2, signal, restr, True, False)
 
-# def __init__(self, z, b, num_var, num_restr, signal, restr, maximize, dual):
+
 # t.start()
-
-
 q = BranchAndBound(True)
 q.BAB(z, b, 2, 2, signal, restr, True, False)
 q.result()
+
+
+pp = [0.5, 0.5]
+xlim = (-1, 10)
+
+if len(restr) == 2:
+    gs.plotagraf(z, gs.formatTable(restr, b), pp, xlim, xlim)

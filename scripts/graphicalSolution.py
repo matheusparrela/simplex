@@ -3,25 +3,24 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 import numpy as np
 
-
-def f(x1, x2):
-    return 3 * x1 + 5 * x2
-
-
-resticoes = [
-    [-1, 0., 0.],  # x₁ ≥ 0
-    [0., -1., 0.],  # x₂ ≥ 0
-    [1., 0., -4.],  # x₁ ≤ 4
-    [0., 2., -12.],  # 2x₁ ≤ 12
-    [3., 2., -18.]  # 3x₁ + x₂ ≤ 18
-]
-
+'''
+z = [3, 5]
+restr = [[1, 0], [0, 2], [3, 2]]
+b = [[4], [12], [18]]
 pp = [0.5, 0.5]
 xlim = (-1, 10)
+'''
 
 
-def plotagraf(resticoes, pp, xlim, ylim):
-    hs = HalfspaceIntersection(np.array(resticoes), np.array(pp))
+def formatTable(restr, b):
+    restr = np.vstack([restr, [[-1, 0], [0, -1]]])
+    b = np.vstack([np.array(b) * -1, [[0], [0]]])
+    table = np.hstack([restr, b])
+    return table
+
+
+def plotagraf(z, table, pp, xlim, ylim):
+    hs = HalfspaceIntersection(np.array(table), np.array(pp))
     fig = plt.figure()
     ax = fig.add_subplot(aspect='equal')
     ax.set_xlim(xlim)
@@ -31,11 +30,11 @@ def plotagraf(resticoes, pp, xlim, ylim):
     i = np.linspace(-15, 10, 100)
 
     X, Y = np.meshgrid(k, i)
-    Z = f(X, Y)
+    Z = z[0] * X + z[1] * Y
 
     x = np.linspace(*xlim, 100)
 
-    for h in resticoes:
+    for h in table:
         if h[1] == 0:
             ax.axvline(-h[2] / h[0], color="#2c3e50")
         else:
@@ -48,7 +47,10 @@ def plotagraf(resticoes, pp, xlim, ylim):
     ax.add_patch(polygon)
     ax.contour(X, Y, Z, 50)
     ax.plot(x, y, 'o', color="#e67e22")
+    plt.show()
 
 
-plotagraf(resticoes, pp, xlim, xlim)
+'''
+plotagraf(z, formatTable(restr, b), pp, xlim, xlim)
 plt.show()
+'''
