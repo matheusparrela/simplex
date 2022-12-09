@@ -29,11 +29,11 @@
   
             <div class="row"> 
               <div class="col-md-3">
-                      {{ form.objective }}
+                {{ form.objective }}
               </div>
             </div>
             <div class="row" style="padding: 1%;">
-              {% for field in form.visible_fields|slice:sliceObjet %}
+              {% for field in context.visible_fields|slice:sliceObjet %}
               <div class="col">
                 {{ field }}
               </div>
