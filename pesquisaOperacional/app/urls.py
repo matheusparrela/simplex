@@ -6,6 +6,8 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('createSimplex/', views.createSimplex, name='createSimplex'),
     path('problemVariables/', views.problemVariables, name='problemVariables'),
-    path('table/', views.table, name='table')
+    #path('table/', views.table, name='table'),
+    path('result/',views.threePass),
+
 ]
 

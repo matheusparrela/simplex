@@ -3,14 +3,20 @@ from django import forms
         
 class MyForm(forms.Form):
     # interface para escolher metodo
+    IMethodModule = [
+        ('GRAPHIC', 'Gráfica'),
+        ('TABULAR', 'Tabular')
+    ]
+    
     IMethod = [
         ('PRIMAL', 'Primal'),
         ('DUAL', 'Dual')
     ]
-    selectSolution       = forms.BooleanField(label="Utilizar solução inteira", required=False,widget=forms.CheckboxInput(attrs={'class':'form-check-input'}))
-    numConstraints       = forms.IntegerField(label='Número de Restrições',widget=forms.NumberInput(attrs={'class':'form-control'}))
-    numVariable          = forms.IntegerField(label='Número de variáveis', widget=forms.NumberInput(attrs={'class':'form-control'}))
-    method               = forms.ChoiceField(choices=IMethod, widget=forms.RadioSelect(attrs={'class':'form-check-input'}), label='Método')
+    selectModule   = forms.ChoiceField(choices = IMethodModule, initial= IMethodModule[1], widget=forms.RadioSelect(attrs={'class': 'form-check-input', 'onchange': 'VerificaVal()','id': 'tipo'}), label='Tipo')
+    selectSolution = forms.BooleanField(label="Utilizar solução inteira", required=False,widget=forms.CheckboxInput(attrs={'class':'form-check-input'}))
+    numConstraints = forms.IntegerField(label='Número de Restrições',widget=forms.NumberInput(attrs={'class':'form-control'}))
+    numVariable    = forms.IntegerField(label='Número de variáveis', widget=forms.NumberInput(attrs={'class':'form-control'}))
+    method         = forms.ChoiceField(choices=IMethod, widget=forms.RadioSelect(attrs={'class':'form-check-input'}), label='Método')
     
                             
 class GenerateProblemSimplex(forms.Form):
@@ -38,11 +44,9 @@ class GenerateProblemSimplex(forms.Form):
                 elif columns < numVariable:
                     if columns != (numVariable - 1):
                         self.fields[f'n{rows}{columns}'] = forms.DecimalField(
-                            label=f'x{columns + 1} +', widget=forms.NumberInput(attrs={'pattern':'[0-9]+$','class':'form-control',
-                                                                                        'placeholder':f'x{columns + 1}',}))
+                            label=f'x{columns + 1} +', widget=forms.NumberInput(attrs={'pattern':'[0-9]+$','class':'form-control','placeholder':f'x{columns + 1}',}))
                     else:
                         self.fields[f'n{rows}{columns}'] = forms.DecimalField(
-                            label=f'x{columns + 1}',widget=forms.NumberInput(attrs={'pattern':'[0-9]+$', 'class':'form-control',
-                                                                                    'placeholder':f'x{columns + 1}',}))
+                            label=f'x{columns + 1}',widget=forms.NumberInput(attrs={'pattern':'[0-9]+$', 'class':'form-control','placeholder':f'x{columns + 1}',}))
                 else:
                     self.fields[f'n{rows}{columns}'] = forms.DecimalField(label=f'break', widget=forms.NumberInput(attrs={'class':'form-control'}))  
