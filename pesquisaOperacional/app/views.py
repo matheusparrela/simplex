@@ -26,7 +26,7 @@ def problemVariables(request):
     
     if request.method == 'POST':
         numConstraints = int(request.session['numConstraints'])
-        numVariable    =  int(request.session['numVariable'])
+        numVariable    = int(request.session['numVariable'])
         
         request.session['objective'] = request.POST['objective']
         
@@ -36,7 +36,7 @@ def problemVariables(request):
         for rows in range(numConstraints):
             for columns in range(numVariable + 2):
                 request.session[f'n{rows}{columns}'] = request.POST[f'n{rows}{columns}']
-
+        
         return redirect('/table')
     
     else:
