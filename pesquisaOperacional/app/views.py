@@ -1,5 +1,6 @@
 #from app.models import Variable
 from django.shortcuts import redirect, render
+
 from .forms import GenerateProblemSimplex, MyForm
 #from .models import Variable
 
@@ -26,7 +27,7 @@ def problemVariables(request):
     
     if request.method == 'POST':
         numConstraints = int(request.session['numConstraints'])
-        numVariable    =  int(request.session['numVariable'])
+        numVariable    = int(request.session['numVariable'])
         
         request.session['objective'] = request.POST['objective']
         
@@ -36,7 +37,7 @@ def problemVariables(request):
         for rows in range(numConstraints):
             for columns in range(numVariable + 2):
                 request.session[f'n{rows}{columns}'] = request.POST[f'n{rows}{columns}']
-
+        
         return redirect('/table')
     
     else:
@@ -62,7 +63,7 @@ def threePass(request):
     
 def tabular_view(request):
     try:
-        json_request = make_json(request.session)
+        json_request = sendInformation(request.session)
         json_request = json.dumps(json_request)
         json_response = simplex.main.solve_simplex(json_request)
         json_response = json.loads(json_response)
@@ -96,3 +97,5 @@ def tabular_view(request):
         print(e)
         messages.error(request, 'Algo de inesperado aconteceu. Verifique as entradas.')
         return redirect('/')
+
+

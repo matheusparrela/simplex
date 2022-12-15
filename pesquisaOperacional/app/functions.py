@@ -1,32 +1,32 @@
-def make_json(session_dict):
-    restr = []
-    funcObj = []
-    for k, v in session_dict.items():
-        if k == 'numVar' or k == 'numRest' or k == 'method' or k == 'objective' or k == "exibition_type" or k == 'integer_solution':
+def sendInformation(requestSession):
+    constraints =  list()
+    funcObj = list()
+    for k, v in requestSession.items():
+        if k == 'numVariable' or k == 'numConstraints' or k == 'IMethod' or k == 'objective' or k == "IMethodModule":
             continue
 
         if 'a' in str(k):
-            restr.append(v)
+            constraints.append(v)
         else:
             funcObj.append(float(v))
 
-    restrictions = treat_restrictions(restr, int(session_dict["numVar"]))
+    restrictions = treat_restrictions(constraints, int(requestSession["numVariable"]))
 
     requestJson = {
-        "problem_type": session_dict["method"],
-        "method": session_dict["exibition_type"],
-        "objective": session_dict["objective"],
+        "problem_type"      : requestSession["IMethod"],
+        "method"            : requestSession["exibition_type"],
+        "objective"         : requestSession["objective"],
         "objective_function": funcObj,
-        "restrictions": restrictions,
+        "restrictions"      : restrictions,
     }
 
-    if "integer_solution" in session_dict.keys():
+    if "integer_solution" in requestSession.keys():
         requestJson["integer_solution"] = True
     else:
         requestJson["integer_solution"] = False
 
     var_names = []
-    for i in range(1, int(session_dict["numVar"]) + 1):
+    for i in range(1, int(requestSession["numVariable"]) + 1):
         var_names.append(f"x{i}")
 
     requestJson["variable_names"] = var_names
@@ -36,14 +36,14 @@ def make_json(session_dict):
 
 
 
-def treat_restrictions(restrictions, num_variables):
-    restrictions_list = []
+def treat_restrictions(constraints, numVariables):
+    constraints_list = []
 
     current_restriction = []
-    for i in range(0, len(restrictions)):
-        current_restriction.append(restrictions[i])
-        if len(current_restriction) == num_variables + 2:
-            restrictions_list.append({
+    for i in range(0, len(constraints)):
+        current_restriction.append(constraints[i])
+        if len(current_restriction) == numVariables + 2:
+            constraints_list.append({
                 "coeficients": [float(val) for val in current_restriction[:-2]],
                 "type": current_restriction[-2],
                 "value": float(current_restriction[-1])
@@ -51,14 +51,14 @@ def treat_restrictions(restrictions, num_variables):
 
             current_restriction = []
 
-    for i in range(int(num_variables)):
-        current_restriction = list(range(int(num_variables)))
+    for i in range(int(numVariables)):
+        current_restriction = list(range(int(numVariables)))
         current_restriction = [x * 0 for x in current_restriction]
         current_restriction[i] = 1
-        restrictions_list.append({
+        constraints_list.append({
             "coeficients": current_restriction,
             "type": ">=",
             "value": 0
         })
 
-    return restrictions_list
+    return constraints_list
