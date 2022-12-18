@@ -4,14 +4,14 @@ import numpy as np
 class Simplex:
 
     def __init__(self, z, b, num_var, num_restr, signal, restr, maximize, dual):
-        self.z = z  # Função a ser maximizada/minimizada
-        self.b = b  # Lado direito das restrições
+        self.z = z.copy()  # Função a ser maximizada/minimizada
+        self.b = b.copy()  # Lado direito das restrições
         self.num_var = num_var  # Número de variáveis
         self.num_restr = num_restr  # Número de restrições
         self.maximize = maximize  # Verifica se é uma maximização ou minimização
         self.dual = dual  # Verifica se a resolução é pelo dual ou primal
-        self.restr = restr  # restrições
-        self.signal = signal  # Sinais das restrições: <=, >=, =
+        self.restr = restr.copy()  # restrições
+        self.signal = signal.copy()  # Sinais das restrições: <=, >=, =
         self.table = []  # Tabela para execução do método simplex
         self.base = []  # Indice de X para os valores básicos
         self.Cb = []  # Valores em Z das variáveis básicas
@@ -25,6 +25,7 @@ class Simplex:
         self.var_artificial = []  # Recebe as variaveis artificiais do problema
         self.solution = []  # Armazena a solução do problema
         self.pos_pivo = []  # Contém a posição do pivô
+        self.artificial_position = []
 
     '''Método construtor da Classe'''
     '''Análisa se a solução já foi encontrada'''
@@ -57,6 +58,7 @@ class Simplex:
                 j += 1
                 self.variable.append(f'X{i + self.num_var + j}')
                 self.var_artificial.append(f'X{i + self.num_var + j}')
+                self.artificial_position.append(i + self.num_var + j)
 
             # Adiciona variáveis: +artificial
             elif self.signal[i] == '=':
@@ -67,6 +69,7 @@ class Simplex:
                 self.Cb.append(-1)
                 self.variable.append(f'X{i + self.num_var + j}')
                 self.var_artificial.append(f'X{i + self.num_var + j}')
+                self.artificial_position.append(i + self.num_var + j)
 
             # Adiciona variáveis: +folga
             elif self.signal[i] == '<=':
@@ -164,21 +167,25 @@ class Simplex:
 
         '''Se existir variáveis artificiais resolvemos usando o método das duas fases'''
         if self.artificial:
-
             '''Enquanto Z diferente de 0'''
-            while (self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] != 0) and (not self.out()):
+            while (np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=2) != 0) and (
+            not self.out()):
                 self.solveSimplex()
                 self.basicVariablesFaseI()
 
-            if self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] == 0:
+            if np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=2) == 0:
                 '''Apaga as colunas das variáveis artificiais para aplicar a 2 fase'''
-                for i in range(0, len(self.base_init)):
-                    self.table = np.delete(self.table, self.base_init[i] - i - 1, axis=1)
+
+                for i in range(0, len(self.artificial_position)):
+                    self.table = np.delete(self.table, self.artificial_position[i] - i - 1, axis=1)
                     # print('Tabela Simplex:\n', np.round(self.table, decimals=3))
-                    self.variable.pop(self.base_init[i] - i - 1)
+                    # self.variable.pop(self.base_init - i - 1)
+                    print(np.round(self.table, decimals=3), '\n')
                 self.exit = False
 
             '''Fase II'''
+            for i in range(0, len(self.Cb)):
+                self.Cb[i] = self.z[int(self.base[i][1])-1]
             self.objectiveFunctionFaseII()
 
         '''Enquanto existir na função objetivo Z valores menores que 0'''
@@ -283,6 +290,9 @@ class Simplex:
         self.z = []
         for i in range(0, len(self.b)):
             self.z.append(self.b[i][0])
+
+        if '=' in self.signal:
+            pass
 
         self.b = []
         self.signal = []

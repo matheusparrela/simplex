@@ -61,11 +61,11 @@ class BranchAndBound:
                         if self.table_solution[i][0] <= self.int_solution[0]:
                             self.int_solution = self.table_solution[i].copy()
 
-        print('Solução Inteira:', self.int_solution)
+        print('\nSolução Inteira:', self.int_solution)
 
-    def BAB(self, z, b, num_var, num_restr, signal, restr, maximize, dual):
+    def BAB(self, z, b, num_var, num_restr, signal, restr, dual):
 
-        novo = Node(Simplex(z, b, num_var, num_restr, signal, restr, maximize, dual), None, None)  # cria um Nó
+        novo = Node(Simplex(z, b, num_var, num_restr, signal, restr, self.maximize, dual), None, None)  # cria um Nó
         novo.item.start()
         self.table_solution.append(novo.item.solution.copy())
         self.iteracao += 1
@@ -112,10 +112,7 @@ class BranchAndBound:
                     restr2.append(new_restr)
                     signal2.append(new_signal)
                     b2.append([new_b])
-                    z.pop()
-                    z.pop()
-                    z.pop()
-                    self.BAB(z, b2, num_var, len(restr2), signal2, restr2, maximize, dual)
+                    self.BAB(z, b2, num_var, len(restr2), signal2, restr2, dual)
                 else:
                     self.table_solution[self.iteracao].append('IMPOSSIVEL')
                     return 'IMPOSSIVEL'
@@ -134,10 +131,7 @@ class BranchAndBound:
                     restr1.append(new_restr)
                     signal1.append(new_signal)
                     b1.append([new_b])
-                    z.pop()
-                    z.pop()
-                    z.pop()
-                    self.BAB(z, b1, num_var,  len(restr1), signal1, restr1, maximize, dual)
+                    self.BAB(z, b1, num_var,  len(restr1), signal1, restr1, dual)
                 else:
                     self.table_solution[self.iteracao].append('IMPOSSIVEL')
                     return 'IMPOSSIVEL'
