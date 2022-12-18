@@ -63,6 +63,7 @@ b = [[6], [45]]
 signal = ['<=', '<=']
 # t = Simplex(z, b, 2, 2, signal, restr, True, False)
 '''
+
 # Problema 8 - Radioterapico
 z = [0.4, 0.5]  # z = 0.4x1 + 0.5x2
 restr = [[0.3, 0.1],
@@ -72,12 +73,25 @@ b = [[2.7], [6], [6]]
 signal = ['<=', '=', '>=']
 t = Simplex(z, b, 2, 3, signal, restr, False, False)
 t.start()
-'''
-q = BranchAndBound(False)
-q.BAB(z, b, 2, 3, signal, restr, False)
+
+
+
+# Problema 8 - Radioterapico
+b = [[0.4], [0.5]]  # z = 0.4x1 + 0.5x2
+restr = [[-0.3, 0.5, 0.6],
+         [-0.1, 0.5, 0.4]]
+z = [-2.7, 6, 6]
+signal = ['<=', '<=']
+t = Simplex(z, b, 3, 2, signal, restr, True, False)
+t.start()
+
+q = BranchAndBound(True)
+q.BAB(z, b, 3, 2, signal, restr, False)
 q.result()
-'''
+
 pp = [0.5, 0.5]
 xlim = (-1, 10)
+'''
 if len(z) == 2:
     gs.plotagraf(z, gs.formatTable(restr, b), pp, xlim, xlim)
+'''

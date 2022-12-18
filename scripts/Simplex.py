@@ -169,7 +169,7 @@ class Simplex:
         if self.artificial:
             '''Enquanto Z diferente de 0'''
             while (np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=2) != 0) and (
-            not self.out()):
+                    not self.out()):
                 self.solveSimplex()
                 self.basicVariablesFaseI()
 
@@ -178,14 +178,13 @@ class Simplex:
 
                 for i in range(0, len(self.artificial_position)):
                     self.table = np.delete(self.table, self.artificial_position[i] - i - 1, axis=1)
-                    # print('Tabela Simplex:\n', np.round(self.table, decimals=3))
                     # self.variable.pop(self.base_init - i - 1)
-                    print(np.round(self.table, decimals=3), '\n')
+
                 self.exit = False
 
             '''Fase II'''
             for i in range(0, len(self.Cb)):
-                self.Cb[i] = self.z[int(self.base[i][1])-1]
+                self.Cb[i] = self.z[int(self.base[i][1]) - 1]
             self.objectiveFunctionFaseII()
 
         '''Enquanto existir na função objetivo Z valores menores que 0'''
@@ -282,6 +281,22 @@ class Simplex:
 
     def dualSimplex(self):
 
+        for i in range(0, len(self.restr)):
+            if self.signal[i] == '=':
+                self.restr.append(self.restr[i].copy())
+                for j in range(0, self.num_var):
+                    self.restr[i][j] = self.restr[i][j]*-1
+                self.signal[i] = '<='
+                self.signal.append('<=')
+                self.b.append([self.b[i][0]])
+                self.b[i][0] = self.b[i][0] *-1
+
+            if self.signal[i] == '<=':
+                self.signal[i] = '>='
+                for j in range(0, self.num_var):
+                    self.restr[i][j] = self.restr[i][j]*-1
+                self.b[i][0] = self.b[i][0] *-1
+
         c = np.transpose(self.restr)
         self.restr = c.tolist()
 
@@ -290,9 +305,6 @@ class Simplex:
         self.z = []
         for i in range(0, len(self.b)):
             self.z.append(self.b[i][0])
-
-        if '=' in self.signal:
-            pass
 
         self.b = []
         self.signal = []
@@ -307,7 +319,8 @@ class Simplex:
         '''Consideramos aqui que as variaveis dos problemas resolvidos serão sempre do tipo X >= 0'''
         for i in range(0, self.num_restr):
             self.b.append([temp[i]])
-            self.signal.append('>=')
+            self.signal.append('<=')
+
 
     '''Para que um modelo esteja na forma padrão, o valor à direita de uma equação ou inequação deve ser sempre 
     não-negativo. Então, caso haja equações do tipo: A primeira coisa que devemos fazer é multiplicar os dois lados 
