@@ -23,11 +23,10 @@ def plotagraf(z, table, pp, xlim, ylim):
     hs = HalfspaceIntersection(np.array(table), np.array(pp))
     fig = plt.figure()
     ax = fig.add_subplot(aspect='equal')
-    ax.set_xlim(xlim)
-    ax.set_ylim(ylim)
 
-    k = np.linspace(-15, 10, 100)
-    i = np.linspace(-15, 10, 100)
+
+    k = np.linspace(-15, 30, 100)
+    i = np.linspace(-15, 30, 100)
 
     X, Y = np.meshgrid(k, i)
     Z = z[0] * X + z[1] * Y
@@ -42,8 +41,12 @@ def plotagraf(z, table, pp, xlim, ylim):
 
     x, y = zip(*hs.intersections)
     points = list(zip(x, y))
+    xlim = (-1, max([p[0] for p in points]) + 1)
+    ylim = (-1, max([p[1] for p in points]) + 1)
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
     convex = ConvexHull(points)
-    polygon = Polygon([points[v] for v in convex.vertices], color="#FF69B4")
+    polygon = Polygon([points[v] for v in convex.vertices], color="#6A95BF")
     ax.add_patch(polygon)
     ax.contour(X, Y, Z, 50)
     ax.plot(x, y, 'o', color="#e67e22")
