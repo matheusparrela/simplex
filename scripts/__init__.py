@@ -94,4 +94,4 @@ solution = t.solution
 q = BranchAndBound(True)
 q.BAB(z, b, 2, 2, signal, restr, False)
 q.result()
-gs.plotagraf(z, gs.formatTable(restr, b), [0.5, 0.5], (-1, 10), (-1, 10), solution)
+gs.plotagraf(z, gs.formatTable(restr, b), [0.5, 0.5], (-1, 1000), (-1, 1000), solution)
