@@ -26,6 +26,8 @@ class Simplex:
         self.solution = []  # Armazena a solução do problema
         self.pos_pivo = []  # Contém a posição do pivô
         self.artificial_position = []
+        self.dict_result = []
+        self.iteracao = 0
 
     '''Método construtor da Classe'''
     '''Análisa se a solução já foi encontrada'''
@@ -172,6 +174,8 @@ class Simplex:
                     not self.out()):
                 self.solveSimplex()
                 self.basicVariablesFaseI()
+                self.iteracao += 1
+                self.retorno()
 
             if np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=2) == 0:
                 '''Apaga as colunas das variáveis artificiais para aplicar a 2 fase'''
@@ -193,6 +197,8 @@ class Simplex:
             self.exit = self.out()
             '''Atualiza as variaveis da base'''
             self.basicVariablesFaseII()
+            self.iteracao += 1
+            self.retorno()
 
         self.noSolution()
         self.infiniteSolutions()
@@ -221,9 +227,9 @@ class Simplex:
             else:
                 list.append(100000000)
 
-        self.pos_pivo.append(list.index(min(list)))
-        self.pos_pivo.append(
-            np.where(self.table[len(self.table) - 1:, 0:-1] == self.table[len(self.table) - 1:, 0:-1].min())[1][0])
+        self.pos_pivo.append(int(list.index(min(list))))
+        self.pos_pivo.append(int(
+            np.where(self.table[len(self.table) - 1:, 0:-1] == self.table[len(self.table) - 1:, 0:-1].min())[1][0]))
 
         '''Solução ilimitada (unbounded): se toda coluna da variável que entra na base tem todos os seus elementos 
         negativos ou nulos, trata-se de um problema não-limitado, ou seja, que tem solução ilimitada. Não há valor 
@@ -365,3 +371,18 @@ class Simplex:
             if self.base[i] in self.var_artificial:
                 if self.table[self.base.index(self.base[i]), self.table.shape[1] - 1] > 0:
                     self.error = 'Erro 5 - Não existe solução.'
+
+    def retorno(self):
+        pass
+        '''
+        iter = {'base': self.base,
+                            'variable': self.variable,
+                            'table': np.round(self.table, decimals=3).tolist(),
+                            'erro': self.error,
+                            'cb': self.Cb,
+                            'z': self.novo_z.tolist(),
+                            'artificial': self.var_artificial,
+                            'pivo': self.pos_pivo
+                }
+        self.dict_result.append(iter)
+        '''
