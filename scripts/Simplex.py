@@ -28,6 +28,7 @@ class Simplex:
         self.artificial_position = []
         self.dict_result = []
         self.iteracao = 0
+        self.fuction_fase = None
 
     '''Método construtor da Classe'''
     '''Análisa se a solução já foi encontrada'''
@@ -121,6 +122,7 @@ class Simplex:
             soma = soma - self.z[i]
             self.table[len(self.table) - 1, i] = soma
 
+
     '''Organiza a tabela para aplicação do método simplex'''
 
     def organizeTable(self):
@@ -144,6 +146,7 @@ class Simplex:
                 self.z[i] = self.z[i] * -1
 
         self.objectiveFunction()
+        self.fuction_fase = self.arti_function.copy()
         self.table = np.vstack([self.table, self.novo_z])
 
         '''Para o passo II - elimina coluna das variáveis artificiais (Caso resrição >= ou =)'''
@@ -175,14 +178,19 @@ class Simplex:
                 self.solveSimplex()
                 self.basicVariablesFaseI()
                 self.iteracao += 1
-                self.retorno()
 
+            self.pos_pivo = []
+            self.retorno()
             if np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=2) == 0:
                 '''Apaga as colunas das variáveis artificiais para aplicar a 2 fase'''
 
+                self.fuction_fase = self.z.copy()
+                self.fuction_fase.pop()
+
                 for i in range(0, len(self.artificial_position)):
                     self.table = np.delete(self.table, self.artificial_position[i] - i - 1, axis=1)
-                    # self.variable.pop(self.base_init - i - 1)
+                    self.variable.pop(self.artificial_position[i] - i - 1)
+                    self.fuction_fase.pop()
 
                 self.exit = False
 
@@ -198,11 +206,13 @@ class Simplex:
             '''Atualiza as variaveis da base'''
             self.basicVariablesFaseII()
             self.iteracao += 1
-            self.retorno()
 
+        self.pos_pivo = []
+        self.retorno()
         self.noSolution()
         self.infiniteSolutions()
         self.result()
+
 
     '''Método de resolução usando o simplex'''
 
@@ -231,6 +241,7 @@ class Simplex:
         self.pos_pivo.append(int(
             np.where(self.table[len(self.table) - 1:, 0:-1] == self.table[len(self.table) - 1:, 0:-1].min())[1][0]))
 
+        self.retorno()
         '''Solução ilimitada (unbounded): se toda coluna da variável que entra na base tem todos os seus elementos 
         negativos ou nulos, trata-se de um problema não-limitado, ou seja, que tem solução ilimitada. Não há valor 
         ótimo concreto para a função objetivo, mas à medida que os valores das variáveis são aumentados, 
@@ -279,6 +290,10 @@ class Simplex:
             else:
                 self.solution.append(0)
                 print(f'{self.variable[i]} = 0')
+
+        self.variable.insert(0, 'Z')
+        self.dict_result.append({"solution": self.solution,
+                                     "variavel": self.variable[0:self.num_var+1]})
 
         if self.error != '':
             print(self.error)
@@ -373,16 +388,25 @@ class Simplex:
                     self.error = 'Erro 5 - Não existe solução.'
 
     def retorno(self):
-        pass
-        '''
+
+        var = self.variable.copy()
+        var.append('b')
+        var = ['Cb'] + var
+
+        Cb = np.round(self.Cb.copy(), decimals=3).tolist()
+        table = np.round(self.table.copy(), decimals=3).tolist()
+        print(table[0])
+        for i in range(0, len(Cb)):
+            table[i].insert(0, Cb[i])
+        print(table)
+
+
         iter = {'base': self.base,
-                            'variable': self.variable,
-                            'table': np.round(self.table, decimals=3).tolist(),
-                            'erro': self.error,
-                            'cb': self.Cb,
-                            'z': self.novo_z.tolist(),
-                            'artificial': self.var_artificial,
-                            'pivo': self.pos_pivo
+                'variable': var,
+                'table': table,
+                'erro': self.error,
+                'z': self.fuction_fase,
+                'pivo': self.pos_pivo
                 }
         self.dict_result.append(iter)
-        '''
+

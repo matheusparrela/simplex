@@ -3,16 +3,15 @@ from BranchAndBound import BranchAndBound
 from SensitivityAnalysis import SensitivityAnalysis
 import graphicalSolution as gs
 import json
-import numpy
+
 # Problema 1
-'''
+
 z = [24, 22, 45]
 restr = [[2, 1, 3], [2, 1, 2], [1, 0.5, 1]]
 b = [[42], [40], [45]]
 signal = ['<=', '<=', '<=']
 t = Simplex(z, b, 3, 3, signal, restr, True, False)
-t.start()
-'''
+
 # Problema 2
 '''
 z = [1, 2, 4]
@@ -73,6 +72,8 @@ restr = [[0.3, 0.1],
 b = [[2.7], [6], [6]]
 signal = ['<=', '=', '>=']
 t = Simplex(z, b, 2, 3, signal, restr, False, False)
+'''
+'''
 t.start()
 q = BranchAndBound(False)
 q.BAB(z, b, 2, 3, signal, restr, False)
@@ -83,7 +84,7 @@ if len(z) == 2:
     gs.plotagraf(z, gs.formatTable(restr, b), [0.5, 0.5], (-1, 10), (-1, 10))
 '''
 
-
+'''
 z = [15, 12]
 restr = [[1, 1], [8, 2]]
 b = [[5], [17]]
@@ -91,7 +92,17 @@ signal = ['<=', '<=']
 t = Simplex(z, b, 2, 2, signal, restr, True, False)
 t.start()
 solution = t.solution
+'''
+'''
 q = BranchAndBound(True)
 q.BAB(z, b, 2, 2, signal, restr, False)
 q.result()
 gs.plotagraf(z, gs.formatTable(restr, b), [0.5, 0.5], (-1, 10), (-1, 10), solution)
+'''
+t.start()
+print(t.variable)
+print(t.dict_result)
+print(t.table)
+print(t.Cb)
+with open('../problem/result.json', 'w') as json_file:
+    json.dump(t.dict_result, json_file, indent=4)
