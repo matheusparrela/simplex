@@ -2,16 +2,17 @@ from Simplex import Simplex
 from BranchAndBound import BranchAndBound
 from SensitivityAnalysis import SensitivityAnalysis
 import graphicalSolution as gs
-
+import json
+import numpy
 # Problema 1
 '''
 z = [24, 22, 45]
-restr= [[2, 1, 3],[2,1, 2], [1, 0.5, 1]]
+restr = [[2, 1, 3], [2, 1, 2], [1, 0.5, 1]]
 b = [[42], [40], [45]]
-signal = ['<=','<=','<=']
+signal = ['<=', '<=', '<=']
 t = Simplex(z, b, 3, 3, signal, restr, True, False)
+t.start()
 '''
-
 # Problema 2
 '''
 z = [1, 2, 4]
@@ -61,9 +62,9 @@ z = [5, 8]    # z = 5x1 + 8x2
 restr = [[1, 1], [5, 9]]  # x1 +x2 <= 6 | 5x1 + 9x2 <= 45
 b = [[6], [45]]
 signal = ['<=', '<=']
-# t = Simplex(z, b, 2, 2, signal, restr, True, False)
+t = Simplex(z, b, 2, 2, signal, restr, True, False)
 '''
-
+'''
 # Problema 8 - Radioterapico
 z = [0.4, 0.5]  # z = 0.4x1 + 0.5x2
 restr = [[0.3, 0.1],
@@ -73,25 +74,23 @@ b = [[2.7], [6], [6]]
 signal = ['<=', '=', '>=']
 t = Simplex(z, b, 2, 3, signal, restr, False, False)
 t.start()
-
-
-
-# Problema 8 - Radioterapico
-b = [[0.4], [0.5]]  # z = 0.4x1 + 0.5x2
-restr = [[-0.3, 0.5, 0.6],
-         [-0.1, 0.5, 0.4]]
-z = [-2.7, 6, 6]
-signal = ['<=', '<=']
-t = Simplex(z, b, 3, 2, signal, restr, True, False)
+q = BranchAndBound(False)
+q.BAB(z, b, 2, 3, signal, restr, False)
+q.result()
 t.start()
 
-q = BranchAndBound(True)
-q.BAB(z, b, 3, 2, signal, restr, False)
-q.result()
-
-pp = [0.5, 0.5]
-xlim = (-1, 10)
-'''
 if len(z) == 2:
-    gs.plotagraf(z, gs.formatTable(restr, b), pp, xlim, xlim)
+    gs.plotagraf(z, gs.formatTable(restr, b), [0.5, 0.5], (-1, 10), (-1, 10))
 '''
+
+
+z = [15, 12]
+restr = [[1, 1], [8, 2]]
+b = [[5], [17]]
+signal = ['<=', '<=']
+t = Simplex(z, b, 2, 2, signal, restr, True, False)
+t.start()
+q = BranchAndBound(True)
+q.BAB(z, b, 2, 2, signal, restr, False)
+q.result()
+gs.plotagraf(z, gs.formatTable(restr, b), [0.5, 0.5], (-1, 10), (-1, 10))
