@@ -31,7 +31,7 @@ def plotagraf(z, table, pp, xlim, ylim, solution):
     X, Y = np.meshgrid(k, i)
     Z = z[0] * X + z[1] * Y
 
-    x = np.linspace(*xlim, 100)
+    x = np.linspace(*xlim, 1000)
 
     for h in table:
         if h[1] == 0:
@@ -41,8 +41,8 @@ def plotagraf(z, table, pp, xlim, ylim, solution):
 
     x, y = zip(*hs.intersections)
     points = list(zip(x, y))
-    xlim = (-1, max([p[0] for p in points]) + 1)
-    ylim = (-1, max([p[1] for p in points]) + 1)
+    xlim = (-1, max([p[0] for p in points]) + 3)
+    ylim = (-1, max([p[1] for p in points]) + 3)
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
     convex = ConvexHull(points)
@@ -50,6 +50,11 @@ def plotagraf(z, table, pp, xlim, ylim, solution):
     ax.add_patch(polygon)
     ax.contour(X, Y, Z, 50)
     ax.plot(x, y, 'o', color="#e67e22")
+    ax.plot(solution[1],solution[2],'o',color="red")
+    plt.xlabel('X1')
+    plt.ylabel('X2')
+    fig.savefig('scripts/figures/graf.png')
+
     plt.show()
 
 
