@@ -19,7 +19,7 @@ def formatTable(restr, b):
     return table
 
 
-def plotagraf(z, table, pp, xlim, ylim):
+def plotagraf(z, table, pp, xlim, ylim, solution):
     hs = HalfspaceIntersection(np.array(table), np.array(pp))
     fig = plt.figure()
     ax = fig.add_subplot(aspect='equal')
