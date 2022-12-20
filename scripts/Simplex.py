@@ -122,7 +122,6 @@ class Simplex:
             soma = soma - self.z[i]
             self.table[len(self.table) - 1, i] = soma
 
-
     '''Organiza a tabela para aplicação do método simplex'''
 
     def organizeTable(self):
@@ -213,7 +212,6 @@ class Simplex:
         self.infiniteSolutions()
         self.result()
 
-
     '''Método de resolução usando o simplex'''
 
     def solveSimplex(self):
@@ -293,7 +291,7 @@ class Simplex:
 
         self.variable.insert(0, 'Z')
         self.dict_result.append({"solution": self.solution,
-                                     "variavel": self.variable[0:self.num_var+1]})
+                                 "variavel": self.variable[0:self.num_var + 1]})
 
         if self.error != '':
             print(self.error)
@@ -306,17 +304,17 @@ class Simplex:
             if self.signal[i] == '=':
                 self.restr.append(self.restr[i].copy())
                 for j in range(0, self.num_var):
-                    self.restr[i][j] = self.restr[i][j]*-1
+                    self.restr[i][j] = self.restr[i][j] * -1
                 self.signal[i] = '<='
                 self.signal.append('<=')
                 self.b.append([self.b[i][0]])
-                self.b[i][0] = self.b[i][0] *-1
+                self.b[i][0] = self.b[i][0] * -1
 
             if self.signal[i] == '<=':
                 self.signal[i] = '>='
                 for j in range(0, self.num_var):
-                    self.restr[i][j] = self.restr[i][j]*-1
-                self.b[i][0] = self.b[i][0] *-1
+                    self.restr[i][j] = self.restr[i][j] * -1
+                self.b[i][0] = self.b[i][0] * -1
 
         c = np.transpose(self.restr)
         self.restr = c.tolist()
@@ -341,7 +339,6 @@ class Simplex:
         for i in range(0, self.num_restr):
             self.b.append([temp[i]])
             self.signal.append('<=')
-
 
     '''Para que um modelo esteja na forma padrão, o valor à direita de uma equação ou inequação deve ser sempre 
     não-negativo. Então, caso haja equações do tipo: A primeira coisa que devemos fazer é multiplicar os dois lados 
@@ -395,11 +392,9 @@ class Simplex:
 
         Cb = np.round(self.Cb.copy(), decimals=3).tolist()
         table = np.round(self.table.copy(), decimals=3).tolist()
-        print(table[0])
+
         for i in range(0, len(Cb)):
             table[i].insert(0, Cb[i])
-        print(table)
-
 
         iter = {'base': self.base,
                 'variable': var,
@@ -409,4 +404,3 @@ class Simplex:
                 'pivo': self.pos_pivo
                 }
         self.dict_result.append(iter)
-
