@@ -25,8 +25,8 @@ def plotagraf(z, table, pp, xlim, ylim, solution):
     ax = fig.add_subplot(aspect='equal')
 
 
-    k = np.linspace(-15, 50, 100)
-    i = np.linspace(-15, 50, 100)
+    k = np.linspace(-15, 30, 100)
+    i = np.linspace(-15, 30, 100)
 
     X, Y = np.meshgrid(k, i)
     Z = z[0] * X + z[1] * Y
@@ -51,7 +51,10 @@ def plotagraf(z, table, pp, xlim, ylim, solution):
     ax.contour(X, Y, Z, 50)
     ax.plot(x, y, 'o', color="#e67e22")
     ax.plot(solution[1],solution[2],'o',color="red")
+    plt.xlabel('X1')
+    plt.ylabel('X2')
     fig.savefig('scripts/figures/graf.png')
+
     plt.show()
 
 
