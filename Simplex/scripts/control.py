@@ -26,7 +26,7 @@ def main(z, b, num_var, num_restr, signal, restr, maximize=True, dual=False, met
         t = Simplex(z, b, num_var, num_restr, signal, restr, True, False)
         t.start()
         if len(t.solution) == 3:
-            gs.plotagraf(z, gs.formatTable(num_var, num_restr), [0.5, 0.5], (-1, 10), (-1, 10), t.solution)
+            gs.plotagraf(z, gs.formatTable(restr, b), [0.5, 0.5], (-1, 10), (-1, 10), t.solution)
 
     if method == 'Tabular':
         t = Simplex(z, b, num_var, num_restr, signal, restr, True, False)

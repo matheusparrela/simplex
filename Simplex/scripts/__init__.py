@@ -5,12 +5,12 @@ import graphicalSolution as gs
 import control
 
 # Problema 1
-
+'''
 z = [24, 22, 45]
 restr = [[2, 1, 3], [2, 1, 2], [1, 0.5, 1]]
 b = [[42], [40], [45]]
 signal = ['<=', '<=', '<=']
-
+'''
 # Problema 2
 '''
 z = [1, 2, 4]
@@ -20,12 +20,12 @@ signal = ['<=','<=','<=']
 '''
 
 # Problema 3
-'''
+
 z = [7, 3]
 restr= [[6, 4],[1, 2],[-1,1], [0,1],[-40, 10]]
 b = [[24], [6], [2], [2], [5]]
 signal = ['<=','<=','<=','<=','<=']
-'''
+
 
 # Problema 4
 '''
@@ -75,4 +75,4 @@ signal = ['<=', '=', '>=']
 
 '''
 
-control.main(z, b, len(z), len(restr), signal, restr, True, False)
+control.main(z, b, len(z), len(restr), signal, restr, True, False, 'grafico')

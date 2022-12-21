@@ -53,7 +53,7 @@ def plotagraf(z, table, pp, xlim, ylim, solution):
     ax.plot(solution[1],solution[2],'o',color="red")
     plt.xlabel('X1')
     plt.ylabel('X2')
-    fig.savefig('scripts/figures/graf.png')
+    fig.savefig('Simplex/scripts/figures/graf.png')
 
     plt.show()
 
