@@ -15,7 +15,7 @@ def read_json():
 
 
 def return_json(dict_result):
-    with open('../problem/result.json', 'w') as json_file:
+    with open('Simplex/problem/data.json', 'w') as json_file:
         json.dump(dict_result, json_file, indent=4)
 
 
@@ -33,7 +33,7 @@ def main(z, b, num_var, num_restr, signal, restr, maximize=True, dual=False, met
         t.start()
         return_json(t.dict_result)
 
-    if method == 'Interger':
+    if method == 'Integer':
         q = BranchAndBound(True)
         q.BAB(z, b, num_var, num_restr, signal, restr, False)
         q.result()

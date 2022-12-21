@@ -1,5 +1,5 @@
 import numpy as np
-
+import json
 
 class Simplex:
 
@@ -289,9 +289,7 @@ class Simplex:
                 self.solution.append(0)
                 print(f'{self.variable[i]} = 0')
 
-        self.variable.insert(0, 'Z')
-        self.dict_result.append({"solution": self.solution,
-                                 "variavel": self.variable[0:self.num_var + 1]})
+        self.result_json()
 
         if self.error != '':
             print(self.error)
@@ -404,3 +402,17 @@ class Simplex:
                 'pivo': self.pos_pivo
                 }
         self.dict_result.append(iter)
+
+
+    def result_json(self):
+
+        dict = {}
+        self.variable.insert(0, 'Z')
+        for i in range(0, len(self.solution)):
+            dict[f'{self.variable[i]}'] = self.solution[i]
+
+        dict_result = {"solution": dict}
+
+        with open('Simplex/problem/solution.json', 'w') as json_file:
+            json.dump([dict_result], json_file, indent=4)
+
