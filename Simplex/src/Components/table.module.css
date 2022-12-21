@@ -1,0 +1,62 @@
+.goodPoint {
+    margin-top: 1rem;
+}
+
+.divText {
+    border-bottom: 1px solid var(--green-400);
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.tableContainer {
+    flex: 1;
+    overflow: auto;
+    margin-top: 2rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+    margin-top: 1rem;
+}
+
+th {
+    background-color: var(--gray-500);
+    padding: 1rem;
+    text-align: left;
+    color: var(--green-400);
+    font-size: 0.875rem;
+    font-weight: bold;
+    line-height: 1.6;
+}
+
+th:first-child {
+    border-top-left-radius: 8px;
+    padding-left: 1.5rem;
+}
+
+th:last-child {
+    border-top-right-radius: 8px;
+    padding-right: 1.5rem;
+}
+
+td {
+    background-color: var(--gray-900);
+    border-top: 1px solid var(--gray-700);
+    padding: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #898E91;
+}
+
+td:first-child {
+    width: 50%;
+    padding-left: 1.5rem;
+    border-bottom-left-radius: 8px;
+}
+
+td:last-child {
+    padding-right: 1.5rem;
+    border-bottom-right-radius: 8px;
+}
