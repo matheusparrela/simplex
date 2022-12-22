@@ -168,19 +168,22 @@ class Simplex:
     def start(self):
 
         self.organizeTable()
-
+        print(np.round(self.table, decimals=3),'\n')
+       
         '''Se existir variáveis artificiais resolvemos usando o método das duas fases'''
         if self.artificial:
             '''Enquanto Z diferente de 0'''
-            while (np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=2) != 0) and (
+            
+            while (np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=3) != 0) and (
                     not self.out()):
                 self.solveSimplex()
                 self.basicVariablesFaseI()
-                self.iteracao += 1
+                print(np.round(self.table, decimals=3),'\n')
 
             self.pos_pivo = []
             self.retorno()
-            if np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=2) == 0:
+
+            if np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=3) == 0:
                 '''Apaga as colunas das variáveis artificiais para aplicar a 2 fase'''
 
                 self.fuction_fase = self.z.copy()
@@ -190,32 +193,36 @@ class Simplex:
                     self.table = np.delete(self.table, self.artificial_position[i] - i - 1, axis=1)
                     self.variable.pop(self.artificial_position[i] - i - 1)
                     self.fuction_fase.pop()
-
                 self.exit = False
+            print(np.round(self.table, decimals=3),'\n')
 
             '''Fase II'''
+            print('Fase II')
             for i in range(0, len(self.Cb)):
                 self.Cb[i] = self.z[int(self.base[i][1]) - 1]
             self.objectiveFunctionFaseII()
-
         '''Enquanto existir na função objetivo Z valores menores que 0'''
+        
         while not self.exit:
             self.solveSimplex()
             self.exit = self.out()
             '''Atualiza as variaveis da base'''
             self.basicVariablesFaseII()
             self.iteracao += 1
+            print(np.round(self.table, decimals=3),'\n')
 
         self.pos_pivo = []
-        self.retorno()
+        #self.retorno()
         self.noSolution()
         self.infiniteSolutions()
         self.result()
+        print(np.round(self.table, decimals=3),'\n')
+        
 
     '''Método de resolução usando o simplex'''
 
     def solveSimplex(self):
-
+        
         self.pos_pivo = []
         list = []
 
@@ -233,13 +240,14 @@ class Simplex:
                 except ArithmeticError:
                     self.error = "Erro 1 - Problema na escolha do Pivô."
             else:
-                list.append(100000000)
+                list.append(100000000000)
 
         self.pos_pivo.append(int(list.index(min(list))))
         self.pos_pivo.append(int(
             np.where(self.table[len(self.table) - 1:, 0:-1] == self.table[len(self.table) - 1:, 0:-1].min())[1][0]))
+        
+        # self.retorno()
 
-        self.retorno()
         '''Solução ilimitada (unbounded): se toda coluna da variável que entra na base tem todos os seus elementos 
         negativos ou nulos, trata-se de um problema não-limitado, ou seja, que tem solução ilimitada. Não há valor 
         ótimo concreto para a função objetivo, mas à medida que os valores das variáveis são aumentados, 
@@ -249,11 +257,14 @@ class Simplex:
             self.exit = True
 
         pivo = self.table[self.pos_pivo[0], self.pos_pivo[1]]
+        print('Posição:', self.pos_pivo)
+        print('Pivo:', pivo)
+        print('Cb:', self.Cb)
 
         if pivo != 0:
             '''Realiza o manipulação das linhas'''
             for i in range(0, len(self.table)):
-
+                
                 mult = -float(self.table[i, self.pos_pivo[1]]) / float(pivo)
 
                 for j in range(0, self.table.shape[1]):
