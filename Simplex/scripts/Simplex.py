@@ -424,6 +424,6 @@ class Simplex:
 
         dict_result = {"solution": dict}
 
-        with open('Simplex/problem/solution.json', 'w') as json_file:
+        with open('../problem/solution.json', 'w') as json_file:
             json.dump([dict_result], json_file, indent=4)
 

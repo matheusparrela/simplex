@@ -7,8 +7,8 @@ import time
 
 
 def return_json(dict_result):
-    with open('Simplex/problem/data.json', 'w') as json_file:
-        json.dump(dict_result, json_file, indent=4)
+    with open('../problem/data.json', 'w') as json_file:
+         json.dump(dict_result, json_file, indent=4)
 
 
 def main(z, b, num_var, num_restr, signal, restr, maximize=True, dual=False, method='Tabular'):
@@ -37,7 +37,7 @@ def read_json():
     
     try: 
         # Opening JSON file
-        file = open('Simplex/problem/problem.json', )
+        file = open('../problem/problem.json', )
         # returns JSON object as a dictionary
         data = json.load(file)
         # Closing file
@@ -79,6 +79,3 @@ def read_json():
         dual = False
 
     main(z, b, len(z), len(restr), signal, restr, maximize, dual, tipo)
-
-
-read_json()
