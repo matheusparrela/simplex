@@ -168,7 +168,6 @@ class Simplex:
     def start(self):
 
         self.organizeTable()
-        print(np.round(self.table, decimals=3),'\n')
        
         '''Se existir variáveis artificiais resolvemos usando o método das duas fases'''
         if self.artificial:
@@ -178,7 +177,6 @@ class Simplex:
                     not self.out()):
                 self.solveSimplex()
                 self.basicVariablesFaseI()
-                print(np.round(self.table, decimals=3),'\n')
 
             self.pos_pivo = []
             self.retorno()
@@ -194,10 +192,8 @@ class Simplex:
                     self.variable.pop(self.artificial_position[i] - i - 1)
                     self.fuction_fase.pop()
                 self.exit = False
-            print(np.round(self.table, decimals=3),'\n')
 
             '''Fase II'''
-            print('Fase II')
             for i in range(0, len(self.Cb)):
                 self.Cb[i] = self.z[int(self.base[i][1]) - 1]
             self.objectiveFunctionFaseII()
@@ -209,14 +205,12 @@ class Simplex:
             '''Atualiza as variaveis da base'''
             self.basicVariablesFaseII()
             self.iteracao += 1
-            print(np.round(self.table, decimals=3),'\n')
 
         self.pos_pivo = []
-        #self.retorno()
+        self.retorno()
         self.noSolution()
         self.infiniteSolutions()
         self.result()
-        print(np.round(self.table, decimals=3),'\n')
         
 
     '''Método de resolução usando o simplex'''
@@ -246,7 +240,7 @@ class Simplex:
         self.pos_pivo.append(int(
             np.where(self.table[len(self.table) - 1:, 0:-1] == self.table[len(self.table) - 1:, 0:-1].min())[1][0]))
         
-        # self.retorno()
+        self.retorno()
 
         '''Solução ilimitada (unbounded): se toda coluna da variável que entra na base tem todos os seus elementos 
         negativos ou nulos, trata-se de um problema não-limitado, ou seja, que tem solução ilimitada. Não há valor 
@@ -257,9 +251,6 @@ class Simplex:
             self.exit = True
 
         pivo = self.table[self.pos_pivo[0], self.pos_pivo[1]]
-        print('Posição:', self.pos_pivo)
-        print('Pivo:', pivo)
-        print('Cb:', self.Cb)
 
         if pivo != 0:
             '''Realiza o manipulação das linhas'''
@@ -281,7 +272,7 @@ class Simplex:
 
     def result(self):
 
-        '''Se o problema é de minimização, o resultado tem que ser multiplicado por -1'''
+        # Se o problema é de minimização, o resultado tem que ser multiplicado por -1
         if not self.maximize:
             self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] = self.table[self.table.shape[0] - 1,
                                                                                       self.table.shape[1] - 1] * -1
