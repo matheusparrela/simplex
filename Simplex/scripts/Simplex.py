@@ -1,5 +1,5 @@
 import numpy as np
-
+import json
 
 class Simplex:
 
@@ -168,19 +168,20 @@ class Simplex:
     def start(self):
 
         self.organizeTable()
-
+       
         '''Se existir variáveis artificiais resolvemos usando o método das duas fases'''
         if self.artificial:
             '''Enquanto Z diferente de 0'''
-            while (np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=2) != 0) and (
+            
+            while (np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=3) != 0) and (
                     not self.out()):
                 self.solveSimplex()
                 self.basicVariablesFaseI()
-                self.iteracao += 1
 
             self.pos_pivo = []
             self.retorno()
-            if np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=2) == 0:
+
+            if np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=3) == 0:
                 '''Apaga as colunas das variáveis artificiais para aplicar a 2 fase'''
 
                 self.fuction_fase = self.z.copy()
@@ -190,15 +191,14 @@ class Simplex:
                     self.table = np.delete(self.table, self.artificial_position[i] - i - 1, axis=1)
                     self.variable.pop(self.artificial_position[i] - i - 1)
                     self.fuction_fase.pop()
-
                 self.exit = False
 
             '''Fase II'''
             for i in range(0, len(self.Cb)):
                 self.Cb[i] = self.z[int(self.base[i][1]) - 1]
             self.objectiveFunctionFaseII()
-
         '''Enquanto existir na função objetivo Z valores menores que 0'''
+        
         while not self.exit:
             self.solveSimplex()
             self.exit = self.out()
@@ -211,11 +211,12 @@ class Simplex:
         self.noSolution()
         self.infiniteSolutions()
         self.result()
+        
 
     '''Método de resolução usando o simplex'''
 
     def solveSimplex(self):
-
+        
         self.pos_pivo = []
         list = []
 
@@ -233,13 +234,14 @@ class Simplex:
                 except ArithmeticError:
                     self.error = "Erro 1 - Problema na escolha do Pivô."
             else:
-                list.append(100000000)
+                list.append(100000000000)
 
         self.pos_pivo.append(int(list.index(min(list))))
         self.pos_pivo.append(int(
             np.where(self.table[len(self.table) - 1:, 0:-1] == self.table[len(self.table) - 1:, 0:-1].min())[1][0]))
-
+        
         self.retorno()
+
         '''Solução ilimitada (unbounded): se toda coluna da variável que entra na base tem todos os seus elementos 
         negativos ou nulos, trata-se de um problema não-limitado, ou seja, que tem solução ilimitada. Não há valor 
         ótimo concreto para a função objetivo, mas à medida que os valores das variáveis são aumentados, 
@@ -253,7 +255,7 @@ class Simplex:
         if pivo != 0:
             '''Realiza o manipulação das linhas'''
             for i in range(0, len(self.table)):
-
+                
                 mult = -float(self.table[i, self.pos_pivo[1]]) / float(pivo)
 
                 for j in range(0, self.table.shape[1]):
@@ -270,7 +272,7 @@ class Simplex:
 
     def result(self):
 
-        '''Se o problema é de minimização, o resultado tem que ser multiplicado por -1'''
+        # Se o problema é de minimização, o resultado tem que ser multiplicado por -1
         if not self.maximize:
             self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] = self.table[self.table.shape[0] - 1,
                                                                                       self.table.shape[1] - 1] * -1
@@ -289,9 +291,7 @@ class Simplex:
                 self.solution.append(0)
                 print(f'{self.variable[i]} = 0')
 
-        self.variable.insert(0, 'Z')
-        self.dict_result.append({"solution": self.solution,
-                                 "variavel": self.variable[0:self.num_var + 1]})
+        self.result_json()
 
         if self.error != '':
             print(self.error)
@@ -404,3 +404,17 @@ class Simplex:
                 'pivo': self.pos_pivo
                 }
         self.dict_result.append(iter)
+
+
+    def result_json(self):
+
+        dict = {}
+        self.variable.insert(0, 'Z')
+        for i in range(0, len(self.solution)):
+            dict[f'{self.variable[i]}'] = self.solution[i]
+
+        dict_result = {"solution": dict}
+
+        with open('../problem/solution.json', 'w') as json_file:
+            json.dump([dict_result], json_file, indent=4)
+

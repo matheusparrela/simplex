@@ -5,12 +5,12 @@ import graphicalSolution as gs
 import control
 
 # Problema 1
-
+'''
 z = [24, 22, 45]
 restr = [[2, 1, 3], [2, 1, 2], [1, 0.5, 1]]
 b = [[42], [40], [45]]
 signal = ['<=', '<=', '<=']
-
+'''
 # Problema 2
 '''
 z = [1, 2, 4]
@@ -51,11 +51,31 @@ signal = ['<=', '<=', '<=']
 
 # Problema 7
 '''
-z = [5, 8]    # z = 5x1 + 8x2
-restr = [[1, 1], [5, 9]]  # x1 +x2 <= 6 | 5x1 + 9x2 <= 45
+z = [5, 8]  # z = 5x1 + 8x2
+restr = [[1, 1],  # x1 + x2 <= 6 |
+         [5, 9],  # 5x1 + 9x2 <= 45
+         [0, 1],
+         [1, 0]]
+b = [[6], [45], [4], [1]]
+signal = ['<=', '<=', '>=', '<=']
+
+'''
+z = [5, 8]  # z = 5x1 + 8x2
+restr = [[1, 1],  # x1 + x2 <= 6 |
+         [5, 9]]
 b = [[6], [45]]
 signal = ['<=', '<=']
+
 '''
+z = [5, 8]  # z = 5x1 + 8x2
+restr = [[1, 1],  # x1 + x2 <= 6 |
+         [5, 9],  # 5x1 + 9x2 <= 45
+         [0, 1],
+         [1, 0], [0, 1]]
+b = [[6], [45], [4], [1], [5]]
+signal = ['<=', '<=', '>=', '<=', '>=']
+'''
+
 # Problem 8
 '''
 z = [15, 12]
@@ -73,6 +93,11 @@ restr = [[0.3, 0.1],
 b = [[2.7], [6], [6]]
 signal = ['<=', '=', '>=']
 
+t = Simplex(z, b, len(z), len(restr), signal, restr, False, False)
+t.start()
 '''
+q = BranchAndBound(True)
+q.BAB(z, b, len(z), len(restr), signal, restr, False)
+# q.result()
 
-control.main(z, b, len(z), len(restr), signal, restr, True, False)
+# control.main(z, b, len(z), len(restr), signal, restr, True, False, 'Integer')
