@@ -1,5 +1,28 @@
 {
   "data": [
-    
+    {
+      "id": 0.7601108095847835,
+      "numberVariablesMethod": [
+        {
+          "x1": "4",
+          "x2": "5",
+          "simbol": "<=",
+          "result": "6"
+        },
+        {
+          "x1": "7",
+          "x2": "8",
+          "simbol": "<=",
+          "result": "9"
+        }
+      ],
+      "constraintsMethod": {
+        "x1": "2",
+        "x2": "3"
+      },
+      "method": "Maximizar",
+      "option": "Primal",
+      "type": "Tabular"
+    }
   ]
 }
