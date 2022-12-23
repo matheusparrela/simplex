@@ -7,6 +7,7 @@ import time
 
 
 def return_json(dict_result):
+    print(dict_result)
     with open('../problem/data.json', 'w') as json_file:
         json.dump(dict_result, json_file, indent=4)
 
@@ -35,7 +36,7 @@ def main(z, b, num_var, num_restr, signal, restr, maximize=True, dual=False, met
 def read_json():
     try:
         # Opening JSON file
-        file = open('../problem/dadosTest.json', )
+        file = open('../dadosTest.json', )
         # returns JSON object as a dictionary
         data = json.load(file)
         data = data['data'][0]
@@ -75,7 +76,7 @@ def read_json():
         dual = True
     else:
         dual = False
-
+    print(modo)
     main(z, b, len(z), len(restr), signal, restr, maximize, dual, tipo)
 
 read_json()

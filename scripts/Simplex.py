@@ -411,7 +411,6 @@ class Simplex:
 
 
     def result_json(self):
-
         dict = {}
         self.variable.insert(0, 'Z')
         for i in range(0, len(self.solution)):
@@ -419,6 +418,6 @@ class Simplex:
 
         dict_result = {"solution": dict}
 
-        with open('../problem/solution.json', 'w') as json_file:
+        with open('../problem/nicePoint.json', 'w') as json_file:
             json.dump([dict_result], json_file, indent=4)
 
