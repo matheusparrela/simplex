@@ -42,7 +42,7 @@ def read_json():
         # Closing file
         file.close()
     except:
-        time.sleep(3)
+        time.sleep(0.5)
         read_json()
 
     objetivo = data['method']
