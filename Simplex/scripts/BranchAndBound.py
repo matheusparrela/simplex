@@ -64,14 +64,14 @@ class BranchAndBound:
         print('\nSolução Inteira:', self.int_solution)
 
     def BAB(self, z, b, num_var, num_restr, signal, restr, dual):
-
+        self.table_solution= []
         novo = Node(Simplex(z, b, num_var, num_restr, signal, restr, self.maximize, dual), None, None)  # cria um Nó
         novo.item.start()
         self.table_solution.append(novo.item.solution.copy())
         self.iteracao += 1
 
         if novo.item.error == 'Erro 5 - Não existe solução.':
-            self.table_solution[self.iteracao].append('IMPOSSIVEL')
+            self.table_solution[0].append('IMPOSSIVEL')
             return 'IMPOSSIVEL'
 
         if self.root is None:  # Verifica se o primeiro nó da árvore existe
@@ -86,11 +86,11 @@ class BranchAndBound:
             residue.append(novo.item.solution[i] - int(novo.item.solution[i]))
 
         if self.viability(novo.item.solution):
-            self.table_solution[self.iteracao].append('VIAVEL')
+            self.table_solution[0].append('VIAVEL')
             return novo.item.solution
 
         else:
-            self.table_solution[self.iteracao].append('INVIAVEL')
+            self.table_solution[0].append('INVIAVEL')
             '''Monta a nova restrição para o problema'''
             new_restr = []
             for i in range(0, len(novo.item.solution) - 1):
