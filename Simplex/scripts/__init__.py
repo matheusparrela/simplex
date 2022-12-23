@@ -104,7 +104,7 @@ b = [[4], [12], [18]]
 signal = ['<=', '<=', '<=']
 
 
-t = Simplex(z, b, len(z), len(restr), signal, restr, False, True)
+t = Simplex(z, b, len(z), len(restr), signal, restr, True, False)
 t.start()
 
 '''
@@ -112,4 +112,4 @@ q = BranchAndBound(True)
 q.BAB(z, b, len(z), len(restr), signal, restr, False)
 q.result()
 '''
-# control.main(z, b, len(z), len(restr), signal, restr, True, False, 'Integer')
+control.main(z, b, len(z), len(restr), signal, restr, True, False, 'Tabular')

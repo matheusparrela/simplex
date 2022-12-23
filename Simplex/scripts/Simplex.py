@@ -341,8 +341,8 @@ class Simplex:
 
         '''Consideramos aqui que as variaveis dos problemas resolvidos serão sempre do tipo X >= 0'''
         for i in range(0, self.num_restr):
-            self.b.append([temp[i]*-1])
-            self.signal.append('>=')
+            self.b.append([temp[i]])
+            self.signal.append('<=')
 
         print('')
 

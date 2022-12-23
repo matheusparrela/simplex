@@ -1,5 +1,5 @@
 import numpy as np
-
+import json
 
 class Simplex:
 
@@ -25,6 +25,10 @@ class Simplex:
         self.var_artificial = []  # Recebe as variaveis artificiais do problema
         self.solution = []  # Armazena a solução do problema
         self.pos_pivo = []  # Contém a posição do pivô
+        self.artificial_position = []
+        self.dict_result = []
+        self.iteracao = 0
+        self.fuction_fase = None
 
     '''Método construtor da Classe'''
     '''Análisa se a solução já foi encontrada'''
@@ -57,6 +61,7 @@ class Simplex:
                 j += 1
                 self.variable.append(f'X{i + self.num_var + j}')
                 self.var_artificial.append(f'X{i + self.num_var + j}')
+                self.artificial_position.append(i + self.num_var + j)
 
             # Adiciona variáveis: +artificial
             elif self.signal[i] == '=':
@@ -67,6 +72,7 @@ class Simplex:
                 self.Cb.append(-1)
                 self.variable.append(f'X{i + self.num_var + j}')
                 self.var_artificial.append(f'X{i + self.num_var + j}')
+                self.artificial_position.append(i + self.num_var + j)
 
             # Adiciona variáveis: +folga
             elif self.signal[i] == '<=':
@@ -139,6 +145,7 @@ class Simplex:
                 self.z[i] = self.z[i] * -1
 
         self.objectiveFunction()
+        self.fuction_fase = self.arti_function.copy()
         self.table = np.vstack([self.table, self.novo_z])
 
         '''Para o passo II - elimina coluna das variáveis artificiais (Caso resrição >= ou =)'''
@@ -164,32 +171,51 @@ class Simplex:
 
         '''Se existir variáveis artificiais resolvemos usando o método das duas fases'''
         if self.artificial:
-
             '''Enquanto Z diferente de 0'''
-            while (self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] != 0) and (not self.out()):
+
+            while (np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=3) != 0) and (
+                    not self.out()):
                 self.solveSimplex()
                 self.basicVariablesFaseI()
 
-            if self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] == 0:
+            self.pos_pivo = []
+            self.retorno()
+
+            if np.round(self.table[self.table.shape[0] - 1, self.table.shape[1] - 1], decimals=3) == 0:
                 '''Apaga as colunas das variáveis artificiais para aplicar a 2 fase'''
-                for i in range(0, len(self.base_init)):
-                    self.table = np.delete(self.table, self.base_init[i] - i - 1, axis=1)
-                    self.variable.pop(self.base_init[i] - i - 1)
+
+                self.fuction_fase = self.z.copy()
+                self.fuction_fase.pop()
+
+                for i in range(0, len(self.artificial_position)):
+                    self.table = np.delete(self.table, self.artificial_position[i] - i - 1, axis=1)
+                    self.variable.pop(self.artificial_position[i] - i - 1)
+                    self.fuction_fase.pop()
                 self.exit = False
 
             '''Fase II'''
+
+            if self.maximize is False:
+                for i in range(0, len(self.Cb)):
+                    self.Cb[i] = self.z[int(self.base[i][1]) - 1]
+
             self.objectiveFunctionFaseII()
 
         '''Enquanto existir na função objetivo Z valores menores que 0'''
+
         while not self.exit:
             self.solveSimplex()
             self.exit = self.out()
             '''Atualiza as variaveis da base'''
             self.basicVariablesFaseII()
+            self.iteracao += 1
 
+        self.pos_pivo = []
+        self.retorno()
         self.noSolution()
         self.infiniteSolutions()
         self.result()
+
 
     '''Método de resolução usando o simplex'''
 
@@ -212,11 +238,13 @@ class Simplex:
                 except ArithmeticError:
                     self.error = "Erro 1 - Problema na escolha do Pivô."
             else:
-                list.append(100000000)
+                list.append(100000000000)
 
-        self.pos_pivo.append(list.index(min(list)))
+        self.pos_pivo.append((list.index(min(list))))
         self.pos_pivo.append(
             np.where(self.table[len(self.table) - 1:, 0:-1] == self.table[len(self.table) - 1:, 0:-1].min())[1][0])
+
+        self.retorno()
 
         '''Solução ilimitada (unbounded): se toda coluna da variável que entra na base tem todos os seus elementos 
         negativos ou nulos, trata-se de um problema não-limitado, ou seja, que tem solução ilimitada. Não há valor 
@@ -248,7 +276,7 @@ class Simplex:
 
     def result(self):
 
-        '''Se o problema é de minimização, o resultado tem que ser multiplicado por -1'''
+        # Se o problema é de minimização, o resultado tem que ser multiplicado por -1
         if not self.maximize:
             self.table[self.table.shape[0] - 1, self.table.shape[1] - 1] = self.table[self.table.shape[0] - 1,
                                                                                       self.table.shape[1] - 1] * -1
@@ -267,12 +295,30 @@ class Simplex:
                 self.solution.append(0)
                 print(f'{self.variable[i]} = 0')
 
+        self.result_json()
+
         if self.error != '':
             print(self.error)
 
     '''Modifica a tabela simplex para utilizar o método na sua forma dual'''
 
     def dualSimplex(self):
+
+        for i in range(0, len(self.restr)):
+            if self.signal[i] == '=':
+                self.restr.append(self.restr[i].copy())
+                for j in range(0, self.num_var):
+                    self.restr[i][j] = self.restr[i][j] * -1
+                self.signal[i] = '<='
+                self.signal.append('<=')
+                self.b.append([self.b[i][0]])
+                self.b[i][0] = self.b[i][0] * -1
+
+            if self.signal[i] == '<=':
+                self.signal[i] = '>='
+                for j in range(0, self.num_var):
+                    self.restr[i][j] = self.restr[i][j] * -1
+                self.b[i][0] = self.b[i][0] * -1
 
         c = np.transpose(self.restr)
         self.restr = c.tolist()
@@ -296,7 +342,7 @@ class Simplex:
         '''Consideramos aqui que as variaveis dos problemas resolvidos serão sempre do tipo X >= 0'''
         for i in range(0, self.num_restr):
             self.b.append([temp[i]])
-            self.signal.append('>=')
+            self.signal.append('<=')
 
     '''Para que um modelo esteja na forma padrão, o valor à direita de uma equação ou inequação deve ser sempre 
     não-negativo. Então, caso haja equações do tipo: A primeira coisa que devemos fazer é multiplicar os dois lados 
@@ -342,14 +388,36 @@ class Simplex:
                 if self.table[self.base.index(self.base[i]), self.table.shape[1] - 1] > 0:
                     self.error = 'Erro 5 - Não existe solução.'
 
+    def retorno(self):
 
-z = [5, 8]  # z = 5x1 + 8x2
-restr = [[1, 1],  # x1 + x2 <= 6 |
-         [5, 9],  # 5x1 + 9x2 <= 45
-         [0, 1],
-         [1, 0], [0, 1]]
-b = [[6], [45], [4], [1], [5]]
-signal = ['<=', '<=', '>=', '<=', '>=']
+        var = self.variable.copy()
+        var.append('b')
+        var = ['Cb'] + var
 
-t = Simplex(z, b, len(z), len(restr), signal, restr, True, False)
-t.start()
+        Cb = np.round(self.Cb.copy(), decimals=3).tolist()
+        table = np.round(self.table.copy(), decimals=3).tolist()
+
+        for i in range(0, len(Cb)):
+            table[i].insert(0, Cb[i])
+
+        iter = {'base': self.base,
+                'variable': var,
+                'table': table,
+                'erro': self.error,
+                'z': self.fuction_fase,
+                'pivo': self.pos_pivo
+                }
+        self.dict_result.append(iter)
+
+
+    def result_json(self):
+
+        dict = {}
+        self.variable.insert(0, 'Z')
+        for i in range(0, len(self.solution)):
+            dict[f'{self.variable[i]}'] = self.solution[i]
+
+        dict_result = {"solution": dict}
+
+        with open('../problem/solution.json', 'w') as json_file:
+            json.dump([dict_result], json_file, indent=4)

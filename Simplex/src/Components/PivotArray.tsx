@@ -10,7 +10,7 @@ export function PivotArray() {
   const [receivedData, newReceivedData] = useState([] as any)
 
   const getData = async () => {
-    const response = await fetch('./../../dados.json');
+    const response = await fetch('./../../problem/data.json');
     const data = await response.json();
     newReceivedData(data);
     console.log("no get", receivedData.base)

@@ -8,7 +8,7 @@ export function Table() {
   const [receivedData, setReceivedData] = useState<object[]>()
 
   const getData = async () => {
-    const response = await fetch('./../../dados.json');
+    const response = await fetch('./../../problem/data.json');
     const data = await response.json();
     setReceivedData(data);
   }

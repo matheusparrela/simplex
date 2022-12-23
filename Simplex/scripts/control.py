@@ -5,7 +5,6 @@ import graphicalSolution as gs
 import json
 import time
 
-
 def return_json(dict_result):
     with open('../problem/data.json', 'w') as json_file:
         json.dump(dict_result, json_file, indent=4)
@@ -42,7 +41,7 @@ def read_json():
         # Closing file
         file.close()
     except:
-        time.sleep(3)
+        time.sleep(1)
         read_json()
 
     objetivo = data['method']
@@ -75,7 +74,7 @@ def read_json():
         dual = True
     else:
         dual = False
+    
 
-    main(z, b, len(z), len(restr), signal, restr, maximize, dual, tipo)
+    main(z, b, len(z), len(restr), signal, restr, maximize, dual, 'Tabular')
 
-read_json()
