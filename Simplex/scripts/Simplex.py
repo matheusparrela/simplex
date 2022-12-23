@@ -194,10 +194,11 @@ class Simplex:
                 self.exit = False
 
             '''Fase II'''
-            '''
-            for i in range(0, len(self.Cb)):
-                self.Cb[i] = self.z[int(self.base[i][1]) - 1]
-            '''
+
+            if self.maximize is False:
+                for i in range(0, len(self.Cb)):
+                    self.Cb[i] = self.z[int(self.base[i][1]) - 1]
+
             self.objectiveFunctionFaseII()
 
         '''Enquanto existir na função objetivo Z valores menores que 0'''

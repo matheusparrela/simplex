@@ -86,20 +86,20 @@ signal = ['<=', '<=']
 
 
 # Problema 9 - Radioterapico
-'''
+
 z = [0.4, 0.5]  # z = 0.4x1 + 0.5x2
 restr = [[0.3, 0.1],
          [0.5, 0.5],
          [0.6, 0.4]]
 b = [[2.7], [6], [6]]
 signal = ['<=', '=', '>=']
-'''
-t = Simplex(z, b, len(z), len(restr), signal, restr, True, False)
+
+t = Simplex(z, b, len(z), len(restr), signal, restr, False, False)
 t.start()
 
 
 q = BranchAndBound(True)
 q.BAB(z, b, len(z), len(restr), signal, restr, False)
 q.result()
-''''''
+
 # control.main(z, b, len(z), len(restr), signal, restr, True, False, 'Integer')

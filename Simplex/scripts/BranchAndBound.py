@@ -53,6 +53,9 @@ class BranchAndBound:
                     if self.table_solution[i][0] <= self.table_solution[0][0]:
                         if self.table_solution[i][0] >= self.int_solution[0]:
                             self.int_solution = self.table_solution[i].copy()
+
+                else:
+                    self.int_solution = self.table_solution[self.iteracao].copy()
         else:
             self.int_solution = [100000000000]
             for i in range(1, len(self.table_solution)):
@@ -60,6 +63,8 @@ class BranchAndBound:
                     if self.table_solution[i][0] >= self.table_solution[0][0]:
                         if self.table_solution[i][0] <= self.int_solution[0]:
                             self.int_solution = self.table_solution[i].copy()
+                else:
+                    self.int_solution = self.table_solution[self.iteracao].copy()
 
         print('\nSolução Inteira:', self.int_solution)
 
@@ -73,6 +78,11 @@ class BranchAndBound:
         if novo.item.error == 'Erro 5 - Não existe solução.':
             self.table_solution[self.iteracao].append('IMPOSSIVEL')
             return 'IMPOSSIVEL'
+
+        if self.iteracao > 20:
+            self.table_solution[self.iteracao].append('NÃO EXISTE SOLUÇÃO INTEIRA')
+            return 'SEM SOLUÇÃO'
+
 
         if self.root is None:  # Verifica se o primeiro nó da árvore existe
             self.root = novo
