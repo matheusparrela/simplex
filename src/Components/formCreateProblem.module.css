@@ -1,0 +1,43 @@
+.form {
+    background: transparent !important;
+    color: var(--white) !important;
+}
+
+
+.objective {
+    padding: 2rem;
+    color: var(--white);
+}
+
+.number {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    margin: 1rem;
+    color: var(--white) !important;
+}
+
+.inputText {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+label {
+    color: var(--white) !important;
+}
+
+.inputRadio {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.FormLabel {
+    border: 1px solid var(--green-600);
+    border-radius: 8px;
+    padding: 0.75rem;
+}
