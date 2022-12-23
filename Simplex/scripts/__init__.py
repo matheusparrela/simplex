@@ -59,14 +59,14 @@ restr = [[1, 1],  # x1 + x2 <= 6 |
 b = [[6], [45], [4], [1]]
 signal = ['<=', '<=', '>=', '<=']
 '''
-'''
+
 z = [5, 8]  # z = 5x1 + 8x2
 restr = [[1, 1],  # x1 + x2 <= 6 |
          [5, 9]]
 b = [[6], [45]]
 signal = ['<=', '<=']
-'''
 
+'''
 z = [5, 8]  # z = 5x1 + 8x2
 restr = [[1, 1],  # x1 + x2 <= 6 |
          [5, 9],  # 5x1 + 9x2 <= 45
@@ -74,7 +74,7 @@ restr = [[1, 1],  # x1 + x2 <= 6 |
          [1, 0], [0, 1]]
 b = [[6], [45], [4], [1], [5]]
 signal = ['<=', '<=', '>=', '<=', '>=']
-
+'''
 
 # Problem 8
 '''
@@ -83,6 +83,7 @@ restr = [[1, 1], [8, 2]]
 b = [[5], [17]]
 signal = ['<=', '<=']
 '''
+
 
 # Problema 9 - Radioterapico
 '''
@@ -95,9 +96,10 @@ signal = ['<=', '=', '>=']
 '''
 t = Simplex(z, b, len(z), len(restr), signal, restr, True, False)
 t.start()
-'''
+
+
 q = BranchAndBound(True)
 q.BAB(z, b, len(z), len(restr), signal, restr, False)
 q.result()
-'''
+''''''
 # control.main(z, b, len(z), len(restr), signal, restr, True, False, 'Integer')

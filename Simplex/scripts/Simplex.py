@@ -194,9 +194,12 @@ class Simplex:
                 self.exit = False
 
             '''Fase II'''
+            '''
             for i in range(0, len(self.Cb)):
                 self.Cb[i] = self.z[int(self.base[i][1]) - 1]
+            '''
             self.objectiveFunctionFaseII()
+
         '''Enquanto existir na função objetivo Z valores menores que 0'''
 
         while not self.exit:
@@ -236,7 +239,7 @@ class Simplex:
             else:
                 list.append(100000000000)
 
-        self.pos_pivo.append(list.index(min(list)))
+        self.pos_pivo.append((list.index(min(list))))
         self.pos_pivo.append(
             np.where(self.table[len(self.table) - 1:, 0:-1] == self.table[len(self.table) - 1:, 0:-1].min())[1][0])
 
