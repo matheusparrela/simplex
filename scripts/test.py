@@ -174,7 +174,6 @@ class Simplex:
                 '''Apaga as colunas das variáveis artificiais para aplicar a 2 fase'''
                 for i in range(0, len(self.base_init)):
                     self.table = np.delete(self.table, self.base_init[i] - i - 1, axis=1)
-                    # print('Tabela Simplex:\n', np.round(self.table, decimals=3))
                     self.variable.pop(self.base_init[i] - i - 1)
                 self.exit = False
 
@@ -342,3 +341,15 @@ class Simplex:
             if self.base[i] in self.var_artificial:
                 if self.table[self.base.index(self.base[i]), self.table.shape[1] - 1] > 0:
                     self.error = 'Erro 5 - Não existe solução.'
+
+
+z = [5, 8]  # z = 5x1 + 8x2
+restr = [[1, 1],  # x1 + x2 <= 6 |
+         [5, 9],  # 5x1 + 9x2 <= 45
+         [0, 1],
+         [1, 0], [0, 1]]
+b = [[6], [45], [4], [1], [5]]
+signal = ['<=', '<=', '>=', '<=', '>=']
+
+t = Simplex(z, b, len(z), len(restr), signal, restr, True, False)
+t.start()
