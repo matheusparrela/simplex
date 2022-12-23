@@ -13,7 +13,7 @@ export function AuxPage() {
   const intervalRef = useRef(null);
 
   const getData = async () => {
-    const response = await fetch('./../../problem/functionGraph.json');
+    const response = await fetch('./../../problem/nicePoint.json');
 
     const data = await response.json();
     if (data?.test) {
