@@ -35,9 +35,10 @@ def main(z, b, num_var, num_restr, signal, restr, maximize=True, dual=False, met
 def read_json():
     try:
         # Opening JSON file
-        file = open('../problem/problem.json', )
+        file = open('../problem/dadosTest.json', )
         # returns JSON object as a dictionary
         data = json.load(file)
+        data = data['data'][0]
         # Closing file
         file.close()
     except:
@@ -76,3 +77,5 @@ def read_json():
         dual = False
 
     main(z, b, len(z), len(restr), signal, restr, maximize, dual, tipo)
+
+read_json()
