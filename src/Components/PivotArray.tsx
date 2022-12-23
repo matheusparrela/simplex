@@ -1,7 +1,9 @@
 import { Table } from "./Table";
+import { CardLoader } from "./CardLoader";
 import { Card3 } from './Card3';
 import { Box, CircularProgress } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
+import styles from './cardLoader.module.css';
 
 export function PivotArray() {
 
@@ -35,15 +37,14 @@ export function PivotArray() {
   if (load) {
 
     return (
-      <div>
-        <Card3>
+      <CardLoader>
           <Box>
+          <div className={styles.loaderDescription}>
             <CircularProgress />
             <h2>Carregando Dados</h2>
+          </div>
           </Box>
-        </Card3>
-
-      </div>
+      </CardLoader>
     );
   }
 

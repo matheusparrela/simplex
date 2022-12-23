@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Card3 } from "./Card3";
 import { Box, CircularProgress } from "@mui/material";
 import { GraphFunction } from "./GraphFunction";
+import { CardLoader } from "./CardLoader";
+import styles from './cardLoader.module.css';
 
 
 export function AuxPage() {
@@ -36,13 +38,14 @@ export function AuxPage() {
 
     return (
       <div>
-        <Card3>
+        <CardLoader>
           <Box>
+          <div className={styles.loaderDescription}>
             <CircularProgress />
             <h2>Carregando Dados</h2>
+          </div>
           </Box>
-        </Card3>
-
+      </CardLoader>
       </div>
     );
   }

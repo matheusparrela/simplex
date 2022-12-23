@@ -1,0 +1,17 @@
+.card {
+    background: var(--gray-800) !important;
+    color: var(--white) !important;
+    border-radius: 8px;
+    padding: 2.5rem;
+    margin: auto;
+}
+
+.loaderDescription{
+    display: flex !important;
+    margin-right: 6rem;
+}
+
+.loaderDescription h2 {
+    padding-left: 1.5rem;
+    padding-top: 0.6rem;
+}
