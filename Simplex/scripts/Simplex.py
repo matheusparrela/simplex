@@ -341,8 +341,10 @@ class Simplex:
 
         '''Consideramos aqui que as variaveis dos problemas resolvidos serão sempre do tipo X >= 0'''
         for i in range(0, self.num_restr):
-            self.b.append([temp[i]])
-            self.signal.append('<=')
+            self.b.append([temp[i]*-1])
+            self.signal.append('>=')
+
+        print('')
 
     '''Para que um modelo esteja na forma padrão, o valor à direita de uma equação ou inequação deve ser sempre 
     não-negativo. Então, caso haja equações do tipo: A primeira coisa que devemos fazer é multiplicar os dois lados 
